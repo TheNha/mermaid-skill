@@ -1,6 +1,6 @@
 # Mermaid 图表技能 —— 从代码到图片,一步到位
 
-[English](README.md)
+[English](README.md) | [在线文档](https://agents365-ai.github.io/mermaid-skill/zh.html)
 
 一个生成、校验并自动导出 Mermaid 图表为 PNG / SVG / PDF 的技能 —— 内置导出前的语法校验环节,本地 `mmdc` 不可用时自动回退到 Kroki API。
 

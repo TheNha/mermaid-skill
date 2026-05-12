@@ -1,6 +1,6 @@
 # Mermaid Diagrams — From Code to Image, Automatically
 
-[中文文档](README_CN.md)
+[中文文档](README_CN.md) | [Online Docs](https://agents365-ai.github.io/mermaid-skill/)
 
 A skill that generates, validates, and exports Mermaid diagrams to PNG / SVG / PDF — with a validation loop that catches syntax errors before export, and a Kroki API fallback when local `mmdc` isn't available.
 
