@@ -1,69 +1,155 @@
-# Mermaid Diagrams — From Code to Image, Automatically
+# mermaid-skill — From Code to Image, Automatically
 
-[中文文档](README_CN.md) | [Online Docs](https://agents365-ai.github.io/mermaid-skill/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/Agents365-ai/mermaid-skill?style=flat&logo=github)](https://github.com/Agents365-ai/mermaid-skill/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Agents365-ai/mermaid-skill?style=flat&logo=github)](https://github.com/Agents365-ai/mermaid-skill/network/members)
+[![Latest Release](https://img.shields.io/github/v/release/Agents365-ai/mermaid-skill?logo=github)](https://github.com/Agents365-ai/mermaid-skill/releases/latest)
+[![Last Commit](https://img.shields.io/github/last-commit/Agents365-ai/mermaid-skill?logo=github)](https://github.com/Agents365-ai/mermaid-skill/commits/main)
 
-A skill that generates, validates, and exports Mermaid diagrams to PNG / SVG / PDF — with a validation loop that catches syntax errors before export, and a Kroki API fallback when local `mmdc` isn't available.
+[![SkillsMP](https://img.shields.io/badge/SkillsMP-listed-1f6feb)](https://skillsmp.com/skills/agents365-ai-mermaid-skill-skills-mermaid-skill-skill-md)
+[![ClawHub](https://img.shields.io/badge/ClawHub-listed-ff6b35)](https://clawhub.ai/agents365-ai/mermaid-pro-skill)
+[![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-8a2be2)](https://github.com/Agents365-ai/365-skills)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-2ea44f)](https://agentskills.io)
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/79JF5Atuk)
 
-Works with Claude Code, Cursor, Copilot, OpenClaw, Codex, and any agent that supports the [Agent Skills](https://agentskills.io) format.
+**English** · [中文](README_CN.md) · [📖 Online Docs](https://agents365-ai.github.io/mermaid-skill/)
 
-## Documentation
+A skill that turns natural-language requests into `.mmd` source, validates syntax before export, and renders to PNG / SVG / PDF via the `mmdc` CLI or the Kroki HTTP API. Works with **Claude Code, Cursor, Copilot, OpenClaw, Codex, Hermes**, and any agent compatible with the [Agent Skills](https://agentskills.io) format.
 
-| Doc | What's inside |
-|---|---|
-| [docs/features.md](docs/features.md) | Why this skill, capability matrix, diagram types, output formats, auto-triggering |
-| [docs/workflow.md](docs/workflow.md) | Validation-first workflow diagram and file structure |
-| [skills/mermaid-skill/SKILL.md](skills/mermaid-skill/SKILL.md) | Workflow guide loaded by the agent |
+<p align="center">
+  <img src="assets/example.png" width="900" alt="Microservices architecture — generated from a single natural-language prompt">
+</p>
 
-## Quick Start
+## ✨ Highlights
 
-Install the skill:
+- **11+ diagram types** — flowchart, sequence, class, ER, state, Gantt, pie, git graph, C4 context, mind map, and more, all with automatic layout (no x/y coordinates)
+- **Validation-first workflow** — every `.mmd` is parsed before export, so broken syntax never leaks into a PNG
+- **Two backends, one skill** — local `mmdc` for best quality, Kroki HTTP API as zero-install fallback (only `curl` required)
+- **Text source = version-control friendly** — `.mmd` is plain text, diffs cleanly in PRs, and embeds directly in GitHub / GitLab READMEs
+- **Proactive triggering** — auto-activates when discussing architecture, API flows, or state machines (English + Chinese keywords)
+- **Multi-agent, zero-config** — one SKILL.md, no MCP server, no background daemon (the optional `npx` installer needs Node, the skill itself does not)
+
+## 🖼️ Examples
+
+> [!TIP]
+> **The hero image above was generated from this single prompt:**
+
+```
+Create a microservices e-commerce architecture with Mobile/Web clients,
+API Gateway, User/Order/Product/Payment services, and User DB / Order DB /
+Product DB / Redis Cache
+```
+
+Full feature matrix in [docs/features.md](docs/features.md). Source `.mmd` files for the hero and workflow images live alongside their PNGs in [`assets/`](assets/).
+
+## 🚀 Installation
+
+### 1. Pick an export backend
+
+| Option | Command | When to use |
+|---|---|---|
+| **A — Local `mmdc`** | `npm install -g @mermaid-js/mermaid-cli && mmdc --version` | Best quality, full theme control, offline use |
+| **B — Kroki API** | `curl --version` | No install, no Node, CI/CD pipelines |
+
+The skill probes `mmdc` first and falls back to Kroki automatically.
+
+### 2. Install the skill
 
 ```bash
-# Any agent (Claude Code, Cursor, Copilot, etc.)
+# Any agent (Claude Code, Cursor, Copilot, ...)
 npx skills add Agents365-ai/365-skills -g
+```
 
-# Claude Code only
+```text
+# Claude Code plugin marketplace
 > /plugin marketplace add Agents365-ai/365-skills
 > /plugin install mermaid
 ```
 
-Manual install — clone into your agent's skills directory:
-
 ```bash
-git clone https://github.com/Agents365-ai/mermaid-skill.git ~/.claude/skills/mermaid-skill
+# Manual install
+git clone https://github.com/Agents365-ai/mermaid-skill.git \
+  ~/.claude/skills/mermaid-skill
 ```
 
-Common paths: `~/.claude/skills/` (Claude Code), `~/.config/opencode/skills/` (Opencode), `~/.openclaw/skills/` (OpenClaw), `~/.agents/skills/` (Codex). Also indexed on [SkillsMP](https://skillsmp.com).
+Also indexed on [SkillsMP](https://skillsmp.com/skills/agents365-ai-mermaid-skill-skills-mermaid-skill-skill-md) and [ClawHub](https://clawhub.ai/agents365-ai/mermaid-pro-skill).
 
-Install dependencies — pick one:
+**Updating:** `/plugin update mermaid` (Claude Code), `skills update mermaid-skill` (SkillsMP), `clawhub update mermaid-pro-skill` (OpenClaw), or `git pull` for manual installs.
 
-```bash
-# Option A — local export (best quality)
-npm install -g @mermaid-js/mermaid-cli && mmdc --version
+## ⚡ Quick Start
 
-# Option B — Kroki API (no install, needs only curl)
-curl --version
-```
-
-## Usage
-
-Just describe what you want:
+After installation, just describe what you want — e.g. a JWT auth sequence:
 
 ```
-> Create a sequence diagram for user authentication with JWT
-
-> Draw an e-commerce microservices architecture
+Create a sequence diagram for JWT login: Client posts credentials to API
+Gateway, gateway calls Auth Service, Auth Service reads the User DB,
+verifies the password hash, and returns a signed JWT back through the
+gateway to the client. Show the failure path for an invalid password too.
 ```
 
-The skill generates the `.mmd` source, **validates syntax**, exports to PNG/SVG/PDF, and reports the output paths.
+The skill picks the diagram type, writes the `.mmd` source, validates with `mmdc` (or Kroki), exports to your chosen format, and reports the output paths.
 
-## Example Output
+## 🧩 Supported Diagram Types
 
-**Prompt:** *Create a microservices e-commerce architecture with API Gateway, services, and databases*
+| Type | Keyword | Use for |
+|---|---|---|
+| Flowchart | `flowchart TD/LR` | processes, pipelines, decision trees |
+| Sequence | `sequenceDiagram` | API calls, auth flows, message passing |
+| Class | `classDiagram` | OOP models, domain entities, inheritance |
+| ER | `erDiagram` | database schemas, relationships |
+| State | `stateDiagram-v2` | state machines, lifecycles |
+| Gantt | `gantt` | project timelines, sprint plans |
+| Pie | `pie` | proportions, distributions |
+| Git Graph | `gitGraph` | branch strategies, GitFlow |
+| C4 Context | `C4Context` | high-level architecture |
+| Mind Map | `mindmap` | topic breakdowns, brainstorms |
+| Journey | `journey` | user journeys |
 
-![Microservices Architecture](assets/example.png)
+Per-type syntax references live in [`skills/mermaid-skill/reference/`](skills/mermaid-skill/reference/) and full feature matrix in [docs/features.md](docs/features.md).
 
-## Support
+## 🔄 How it works
+
+<p align="center">
+  <img src="assets/workflow.png" width="700" alt="Validation-first workflow">
+</p>
+
+Behind the scenes: **check deps (`mmdc` or Kroki) → pick diagram type → write `.mmd` → validate syntax → fix and re-validate on error → export PNG/SVG/PDF → report output paths**. Walkthrough in [docs/workflow.md](docs/workflow.md).
+
+## 🆚 Comparison
+
+### vs Native Agent (no skill)
+
+| Feature | Native agent | mermaid-skill |
+|---|---|---|
+| Writes Mermaid syntax | ✅ inline | ✅ guided by examples + reference files |
+| Validation before export | ❌ exports broken `.mmd` silently | ✅ required step, retries on error |
+| Export to PNG / SVG / PDF | ❌ manual, you run `mmdc` yourself | ✅ automatic, one of two backends |
+| Zero-install fallback | ❌ | ✅ Kroki API needs only `curl` |
+| Proactive triggering | ❌ only when explicitly asked | ✅ auto-triggers on 3+ components, API flows, state machines |
+| Bilingual triggers | ❌ English only | ✅ English + Chinese keywords |
+| Diagram-type guidance | generic | ✅ 11+ type table with copy-paste templates |
+
+## 🔗 Related Skills
+
+Part of the [Agents365-ai diagram-skill family](https://github.com/Agents365-ai) — pick the right tool for the job:
+
+| Skill | Style | Best for |
+|---|---|---|
+| [drawio-skill](https://github.com/Agents365-ai/drawio-skill) | XML, manual layout control | Polished architecture diagrams, ML model figures |
+| [excalidraw-skill](https://github.com/Agents365-ai/excalidraw-skill) | Hand-drawn / sketchy | Whiteboard mockups, informal diagrams |
+| [plantuml-skill](https://github.com/Agents365-ai/plantuml-skill) | UML-focused | Class / sequence diagrams in CI pipelines |
+| [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill) | Whiteboard collaboration | Casual sketches, FigJam-style boards |
+
+## 💬 Community
+
+- **Discord:** https://discord.gg/79JF5Atuk
+- **WeChat:** scan the QR code below
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/agents365ai_wechat_1.png" width="200" alt="WeChat Community Group">
+</p>
+
+## ❤️ Support
 
 If this skill helps you, consider supporting the author:
 
@@ -84,16 +170,21 @@ If this skill helps you, consider supporting the author:
       <br>
       <b>Buy Me a Coffee</b>
     </td>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/awarding/award.gif" width="180" alt="Give a Reward">
+      <br>
+      <b>Give a Reward</b>
+    </td>
   </tr>
 </table>
 
-## Author
+## 👤 Author
 
 **Agents365-ai**
 
 - GitHub: https://github.com/Agents365-ai
 - Bilibili: https://space.bilibili.com/441831884
 
-## License
+## 📄 License
 
-MIT
+[MIT](LICENSE)

@@ -1,71 +1,156 @@
-# Mermaid 图表技能 —— 从代码到图片,一步到位
+# mermaid-skill —— 从代码到图片,一步到位
 
-[English](README.md) | [在线文档](https://agents365-ai.github.io/mermaid-skill/zh.html)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/Agents365-ai/mermaid-skill?style=flat&logo=github)](https://github.com/Agents365-ai/mermaid-skill/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Agents365-ai/mermaid-skill?style=flat&logo=github)](https://github.com/Agents365-ai/mermaid-skill/network/members)
+[![Latest Release](https://img.shields.io/github/v/release/Agents365-ai/mermaid-skill?logo=github)](https://github.com/Agents365-ai/mermaid-skill/releases/latest)
+[![Last Commit](https://img.shields.io/github/last-commit/Agents365-ai/mermaid-skill?logo=github)](https://github.com/Agents365-ai/mermaid-skill/commits/main)
 
-一个生成、校验并自动导出 Mermaid 图表为 PNG / SVG / PDF 的技能 —— 内置导出前的语法校验环节,本地 `mmdc` 不可用时自动回退到 Kroki API。
+[![SkillsMP](https://img.shields.io/badge/SkillsMP-listed-1f6feb)](https://skillsmp.com/skills/agents365-ai-mermaid-skill-skills-mermaid-skill-skill-md)
+[![ClawHub](https://img.shields.io/badge/ClawHub-listed-ff6b35)](https://clawhub.ai/agents365-ai/mermaid-pro-skill)
+[![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-8a2be2)](https://github.com/Agents365-ai/365-skills)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-兼容-2ea44f)](https://agentskills.io)
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/79JF5Atuk)
 
-支持 Claude Code、Cursor、Copilot、OpenClaw、Codex 等任何兼容 [Agent Skills](https://agentskills.io) 规范的 agent。
+[English](README.md) · **中文** · [📖 在线文档](https://agents365-ai.github.io/mermaid-skill/zh.html)
 
-## 文档导航
+一个把自然语言转成 `.mmd` 源码、导出前自动校验语法,再通过 `mmdc` CLI 或 Kroki HTTP API 渲染为 PNG / SVG / PDF 的技能。支持 **Claude Code、Cursor、Copilot、OpenClaw、Codex、Hermes** 等任何兼容 [Agent Skills](https://agentskills.io) 规范的 agent。
 
-| 文档 | 内容 |
-|---|---|
-| [docs/features_CN.md](docs/features_CN.md) | 为什么选这个技能、能力对比、图表类型、输出格式、自动触发 |
-| [docs/workflow_CN.md](docs/workflow_CN.md) | 验证优先的工作流图与文件结构 |
-| [skills/mermaid-skill/SKILL.md](skills/mermaid-skill/SKILL.md) | agent 加载的工作流指南 |
+<p align="center">
+  <img src="assets/example.png" width="900" alt="微服务架构 —— 来自一条自然语言提示词">
+</p>
 
-## 快速开始
+## ✨ 核心亮点
 
-安装技能:
+- **11+ 种图表类型** —— 流程图、时序图、类图、ER、状态图、甘特、饼图、Git 图、C4 上下文、思维导图等,全部自动布局(无需 x/y 坐标)
+- **校验优先的工作流** —— 每个 `.mmd` 都先解析再导出,坏图永远不会变成 PNG
+- **两套后端,一个技能** —— 本地 `mmdc` 质量最佳,Kroki HTTP API 作为零安装备选(只要 `curl`)
+- **文本源码 = 友好版本管理** —— `.mmd` 是纯文本,在 PR 里 diff 清晰,可直接嵌入 GitHub / GitLab README
+- **主动触发** —— 讨论架构、API 流程、状态机时自动激活(中英文关键词都支持)
+- **多智能体、零配置** —— 单个 SKILL.md,无 MCP,无后台 daemon(可选的 `npx` 安装器需要 Node,技能本身不需要)
+
+## 🖼️ 示例
+
+> [!TIP]
+> **页首那张图就是用下面这条提示词生成的:**
+
+```
+画一个微服务电商架构图,包含 Mobile/Web 客户端、API 网关、
+User/Order/Product/Payment 服务,以及 User DB / Order DB /
+Product DB / Redis Cache
+```
+
+完整能力矩阵见 [docs/features_CN.md](docs/features_CN.md)。页首与工作流插图的源 `.mmd` 与导出 PNG 都放在 [`assets/`](assets/) 目录。
+
+## 🚀 安装
+
+### 1. 选择导出后端
+
+| 选项 | 命令 | 适用场景 |
+|---|---|---|
+| **A —— 本地 `mmdc`** | `npm install -g @mermaid-js/mermaid-cli && mmdc --version` | 质量最佳、可控主题、离线使用 |
+| **B —— Kroki API** | `curl --version` | 无需安装、无需 Node、CI/CD 流水线 |
+
+技能会先尝试 `mmdc`,失败时自动回退到 Kroki。
+
+### 2. 安装技能
 
 ```bash
-# 任意 agent(Claude Code、Cursor、Copilot 等)
+# 任意 Agent(Claude Code、Cursor、Copilot 等)
 npx skills add Agents365-ai/365-skills -g
+```
 
-# 仅 Claude Code
+```text
+# Claude Code 插件市场
 > /plugin marketplace add Agents365-ai/365-skills
 > /plugin install mermaid
 ```
 
-手动安装 —— 克隆到你的 agent skills 目录:
-
 ```bash
-git clone https://github.com/Agents365-ai/mermaid-skill.git ~/.claude/skills/mermaid-skill
+# 手动安装
+git clone https://github.com/Agents365-ai/mermaid-skill.git \
+  ~/.claude/skills/mermaid-skill
 ```
 
-常用路径:`~/.claude/skills/`(Claude Code)、`~/.config/opencode/skills/`(Opencode)、`~/.openclaw/skills/`(OpenClaw)、`~/.agents/skills/`(Codex)。同时已索引于 [SkillsMP](https://skillsmp.com)。
+同时索引于 [SkillsMP](https://skillsmp.com/skills/agents365-ai-mermaid-skill-skills-mermaid-skill-skill-md) 与 [ClawHub](https://clawhub.ai/agents365-ai/mermaid-pro-skill)。
 
-安装依赖,两选一:
+**更新:** `/plugin update mermaid`(Claude Code)、`skills update mermaid-skill`(SkillsMP)、`clawhub update mermaid-pro-skill`(OpenClaw),或 `git pull`(手动安装)。
 
-```bash
-# 方式 A —— 本地导出(最佳质量)
-npm install -g @mermaid-js/mermaid-cli && mmdc --version
+## ⚡ 快速开始
 
-# 方式 B —— Kroki API(无需安装,只要 curl)
-curl --version
-```
-
-## 使用方式
-
-在 Claude Code 中描述你想要的:
+装好之后直接描述你想要的图表,比如一个 JWT 认证时序图:
 
 ```
-> 创建一个用户认证的时序图,使用 JWT
-
-> 画一个电商微服务架构图
+画一个 JWT 登录的时序图:Client 把账号密码发给 API Gateway,
+Gateway 调 Auth Service,Auth Service 查 User DB、校验密码哈希,
+然后把签名后的 JWT 沿路径返回给 Client。同时画出密码错误的失败分支。
 ```
 
-技能会生成 `.mmd` 源码、**自动校验语法**、导出为 PNG/SVG/PDF,并报告输出路径。
+技能会自动选图表类型、写 `.mmd` 源码、用 `mmdc`(或 Kroki)校验、导出你想要的格式,并报告输出路径。
 
-## 示例输出
+## 🧩 支持的图表类型
 
-**提示词:** *创建一个微服务电商架构,包含 API 网关、各种服务和数据库*
+| 类型 | 关键词 | 适用场景 |
+|---|---|---|
+| 流程图 | `flowchart TD/LR` | 业务流程、流水线、决策树 |
+| 时序图 | `sequenceDiagram` | API 调用、认证流程、消息传递 |
+| 类图 | `classDiagram` | OOP 模型、领域实体、继承关系 |
+| ER 图 | `erDiagram` | 数据库模式、表关系 |
+| 状态图 | `stateDiagram-v2` | 状态机、生命周期 |
+| 甘特图 | `gantt` | 项目时间线、迭代规划 |
+| 饼图 | `pie` | 占比、分布 |
+| Git 图 | `gitGraph` | 分支策略、GitFlow |
+| C4 上下文 | `C4Context` | 高层架构 |
+| 思维导图 | `mindmap` | 主题拆解、头脑风暴 |
+| 用户旅程 | `journey` | 用户路径 |
 
-![微服务架构](assets/example.png)
+各类型语法参考见 [`skills/mermaid-skill/reference/`](skills/mermaid-skill/reference/),完整能力矩阵见 [docs/features_CN.md](docs/features_CN.md)。
 
-## 支持作者
+## 🔄 工作流程
 
-如果这个技能对你有帮助,欢迎支持作者:
+<p align="center">
+  <img src="assets/workflow_cn.png" width="700" alt="校验优先的工作流">
+</p>
+
+幕后流程:**检查依赖(`mmdc` 或 Kroki)→ 选图表类型 → 写 `.mmd` → 校验语法 → 出错则修复并重新校验 → 导出 PNG/SVG/PDF → 报告输出路径**。详见 [docs/workflow_CN.md](docs/workflow_CN.md)。
+
+## 🆚 对比
+
+### 对比原生智能体(无 skill)
+
+| 功能 | 原生智能体 | mermaid-skill |
+|---|---|---|
+| 写 Mermaid 语法 | ✅ 内置 | ✅ 配示例 + 参考文档引导 |
+| 导出前校验 | ❌ 默默导出坏图 | ✅ 必经步骤,出错自动重试 |
+| 导出为 PNG / SVG / PDF | ❌ 手动跑 `mmdc` | ✅ 自动选用一种后端 |
+| 零安装备选 | ❌ | ✅ Kroki API 只要 `curl` |
+| 主动触发 | ❌ 必须显式要求 | ✅ 3+ 组件、API 流程、状态机自动触发 |
+| 中英双语触发 | ❌ 仅英文 | ✅ 中英关键词都支持 |
+| 图表类型引导 | 一般化 | ✅ 11+ 类型表 + 可复制模板 |
+
+## 🔗 相关 Skill
+
+[Agents365-ai 图表 skill 家族](https://github.com/Agents365-ai) 一员 —— 按场景挑工具:
+
+| Skill | 风格 | 适用场景 |
+|---|---|---|
+| [drawio-skill](https://github.com/Agents365-ai/drawio-skill) | XML、可手动控制布局 | 精修架构图、ML 模型图 |
+| [excalidraw-skill](https://github.com/Agents365-ai/excalidraw-skill) | 手绘 / 草图 | 白板原型、非正式图 |
+| [plantuml-skill](https://github.com/Agents365-ai/plantuml-skill) | UML 专精 | CI 流水线里的类图 / 序列图 |
+| [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill) | 白板协作 | 随手画、FigJam 风格 |
+
+## 💬 社区
+
+- **Discord:** https://discord.gg/79JF5Atuk
+- **微信:** 扫描下方二维码
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/agents365ai_wechat_1.png" width="200" alt="微信交流群">
+</p>
+
+## ❤️ 支持作者
+
+如果这个 skill 对你有帮助,欢迎支持作者:
 
 <table>
   <tr>
@@ -84,16 +169,21 @@ curl --version
       <br>
       <b>Buy Me a Coffee</b>
     </td>
+    <td align="center">
+      <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/awarding/award.gif" width="180" alt="打赏">
+      <br>
+      <b>打赏</b>
+    </td>
   </tr>
 </table>
 
-## 作者
+## 👤 作者
 
 **Agents365-ai**
 
 - GitHub: https://github.com/Agents365-ai
 - Bilibili: https://space.bilibili.com/441831884
 
-## License
+## 📄 许可证
 
-MIT
+[MIT](LICENSE)
