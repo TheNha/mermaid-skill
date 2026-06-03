@@ -24,6 +24,7 @@ A skill that turns natural-language requests into `.mmd` source, validates synta
 
 - **11+ diagram types** — flowchart, sequence, class, ER, state, Gantt, pie, git graph, C4 context, mind map, and more, all with automatic layout (no x/y coordinates)
 - **Validation-first workflow** — every `.mmd` is parsed before export, so broken syntax never leaks into a PNG
+- **Vision self-check + review loop** — reads the exported PNG to catch readability/layout defects auto-layout can't prevent (clipped labels, cramped density, wrong orientation), auto-fixes (≤2 rounds), then iterates with you on feedback (≤5 rounds)
 - **Two backends, one skill** — local `mmdc` for best quality, Kroki HTTP API as zero-install fallback (only `curl` required)
 - **Text source = version-control friendly** — `.mmd` is plain text, diffs cleanly in PRs, and embeds directly in GitHub / GitLab READMEs
 - **Proactive triggering** — auto-activates when discussing architecture, API flows, or state machines (English + Chinese keywords)
@@ -113,7 +114,7 @@ Per-type syntax references live in [`skills/mermaid-skill/reference/`](skills/me
   <img src="assets/workflow.png" width="700" alt="Validation-first workflow">
 </p>
 
-Behind the scenes: **check deps (`mmdc` or Kroki) → pick diagram type → write `.mmd` → validate syntax → fix and re-validate on error → export PNG/SVG/PDF → report output paths**. Walkthrough in [docs/workflow.md](docs/workflow.md).
+Behind the scenes: **check deps (`mmdc` or Kroki) → pick diagram type → write `.mmd` → validate syntax (fix & re-validate on error) → export PNG/SVG/PDF → vision self-check the render and auto-fix readability/layout defects (≤2 rounds) → review loop on your feedback (≤5 rounds) → report output paths**. Walkthrough in [docs/workflow.md](docs/workflow.md).
 
 ## 🆚 Comparison
 
@@ -123,6 +124,8 @@ Behind the scenes: **check deps (`mmdc` or Kroki) → pick diagram type → writ
 |---|---|---|
 | Writes Mermaid syntax | ✅ inline | ✅ guided by examples + reference files |
 | Validation before export | ❌ exports broken `.mmd` silently | ✅ required step, retries on error |
+| Self-check after export | ❌ never looks at the render | ✅ vision reads the PNG, auto-fixes layout/readability (≤2 rounds) |
+| Iterative review loop | ❌ manual re-prompt | ✅ targeted `.mmd` edits, 5-round safety valve |
 | Export to PNG / SVG / PDF | ❌ manual, you run `mmdc` yourself | ✅ automatic, one of two backends |
 | Zero-install fallback | ❌ | ✅ Kroki API needs only `curl` |
 | Proactive triggering | ❌ only when explicitly asked | ✅ auto-triggers on 3+ components, API flows, state machines |

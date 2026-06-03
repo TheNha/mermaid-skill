@@ -43,7 +43,9 @@ curl --version  # Just need curl
 3. **Generate** — write `.mmd` file to disk
 4. **Validate** — run validation (REQUIRED before export)
 5. **Export** — use `mmdc` or Kroki API to produce PNG/SVG/PDF
-6. **Report** — tell user the output file paths
+6. **Self-check (vision)** — read the exported PNG and fix readability/layout defects that automatic layout can't prevent (clipped labels, cramped density, wrong orientation), then re-validate + re-export. Max 2 rounds; skip if no vision. See **Self-Check (vision)** below.
+7. **Review loop** — show the image to the user, apply the minimal `.mmd` edit per request, re-export until approved (5-round safety valve). See **Review Loop** below.
+8. **Report** — tell user the output file paths
 
 ## Validation (Required)
 
@@ -66,6 +68,38 @@ Common validation errors:
 - Undeclared participants in sequence diagrams
 
 > A `Could not find Chrome` (or puppeteer) error from `mmdc` is a **setup** problem, not a diagram error — the `.mmd` may be perfectly valid. Install the browser (see Prerequisites) or validate via Kroki instead of "fixing" correct syntax.
+
+## Self-Check (vision)
+
+Validation (above) only proves the syntax is legal — it says nothing about whether the **rendered** diagram is readable. After exporting, use the agent's vision capability to read the PNG and catch what automatic layout can't prevent. Mermaid positions everything itself, so the failures here are about content and readability, **not** overlaps:
+
+| Check | What to look for | Fix |
+|---|---|---|
+| Label truncation | Node / edge text clipped or cut off | Shorten the label, or wrap it with `<br/>` |
+| Cramped, unreadable density | Too many nodes crammed together; tangled lines | Flip direction (`TD`↔`LR`), split into `subgraph`s, or reduce nodes |
+| Wrong orientation / aspect | Diagram far too wide or too tall to read | Change `flowchart TD`↔`LR` (or set `direction` in class/state) |
+| Edge spaghetti | Many edges crossing, hard to follow | Reorder node declarations so connected nodes sit adjacent; group with `subgraph` |
+| Wrong diagram type | Type doesn't suit the content (e.g. flowchart for a timeline) | Switch type (`gantt`, `sequenceDiagram`, `stateDiagram-v2`, …) |
+| Low contrast | Text blends into the node fill | Adjust `classDef` / theme so text contrasts the fill |
+
+- Max **2 self-check rounds** — if issues remain after 2 fixes, show the user anyway.
+- **Re-validate (syntax) and re-export after every fix.**
+- If vision is unavailable, skip self-check and show the PNG directly.
+
+## Review Loop
+
+After self-check, show the exported image and collect feedback. Apply the **minimal `.mmd` edit** for each request, then re-validate and re-export:
+
+| User request | Edit action |
+|---|---|
+| Change a label | Edit the node / edge text in the `.mmd` |
+| Add / remove a node or edge | Add or delete the matching line |
+| Change a color | Add / adjust a `classDef` and `class <node> <className>` |
+| Change layout direction | Swap `TD`↔`LR` (flowchart) or set `direction` (class / state) |
+| Restructure / group | Wrap related nodes in a `subgraph`, or regenerate |
+
+- Overwrite the same `diagram.mmd` / `diagram.png` each round — don't create `v1`, `v2`, …
+- **Safety valve:** after 5 rounds, suggest the user fine-tune at [mermaid.live](https://mermaid.live).
 
 ## Diagram Types
 
