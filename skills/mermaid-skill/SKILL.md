@@ -13,11 +13,13 @@ Generate `.mmd` text files and export to PNG/SVG/PDF using `mmdc` (local) or Kro
 
 ## Prerequisites
 
-**Option A: Local (mmdc)**
+**Option A: Local (mmdc)** — also needs a headless Chrome (mmdc renders via Puppeteer)
 ```bash
 npm install -g @mermaid-js/mermaid-cli
+npx puppeteer browsers install chrome-headless-shell   # required — mmdc has no bundled browser
 mmdc --version
 ```
+> `mmdc --version` succeeds even with **no** Chrome installed, but every export then fails with `Could not find Chrome`. Install the browser above (or set `PUPPETEER_EXECUTABLE_PATH` to a system Chrome). If you can't, use Kroki (Option B) — it needs no browser.
 
 **Option B: Kroki API (no install)**
 ```bash
@@ -26,21 +28,7 @@ curl --version  # Just need curl
 
 ## Workflow
 
-0. **Update check (notify, don't pull)** — first use per conversation. Throttle to once per 24 h via `<this-skill-dir>/.last_update`; never mutate the skill directory without explicit user consent.
-
-   - If `.last_update` exists and is <24 h old, skip this step entirely.
-   - Otherwise, fetch the latest tag from upstream:
-     ```bash
-     git -C <this-skill-dir> ls-remote --tags origin 'v*' 2>/dev/null \
-       | awk '{print $2}' | sed 's|refs/tags/||' | sort -V | tail -1
-     ```
-   - Compare with this skill's `metadata.version` from the frontmatter. If the upstream tag is strictly newer (semver), tell the user one line and ask:
-     > "A newer version of this skill is available: vX.Y.Z → vA.B.C. Want me to `git pull`?"
-
-     If they say yes, run `git -C <this-skill-dir> pull --ff-only`. Refresh `.last_update` either way so the prompt doesn't repeat for 24 hours.
-   - If upstream is the same or older, refresh `.last_update` silently and continue.
-   - On any failure (offline, not a git checkout — e.g. ClawHub-installed copy, read-only path, no permission), swallow the error silently and continue with the user's task. Do not mention the failure.
-1. **Check deps** — try `mmdc --version`, fallback to Kroki if unavailable
+1. **Check deps** — `mmdc --version` **and** confirm a headless Chrome is installed (a bare `--version` pass does NOT mean export works); fall back to Kroki if either is missing
 2. **Pick diagram type** — choose from table below
 3. **Generate** — write `.mmd` file to disk
 4. **Validate** — run validation (REQUIRED before export)
@@ -67,6 +55,8 @@ Common validation errors:
 - Wrong arrow syntax (use `->>` for sequence, `-->` for flowchart)
 - Undeclared participants in sequence diagrams
 
+> A `Could not find Chrome` (or puppeteer) error from `mmdc` is a **setup** problem, not a diagram error — the `.mmd` may be perfectly valid. Install the browser (see Prerequisites) or validate via Kroki instead of "fixing" correct syntax.
+
 ## Diagram Types
 
 | Type | Keyword | Use for |
@@ -81,6 +71,7 @@ Common validation errors:
 | Git Graph | `gitGraph` | branch strategies |
 | C4 Context | `C4Context` | high-level architecture |
 | Mind Map | `mindmap` | topic breakdowns |
+| User Journey | `journey` | user-experience flows |
 
 ## Syntax Reference
 
@@ -187,7 +178,8 @@ Requires `mmdc` installed locally. Best for offline use.
 # PNG (recommended: 2048px wide, white background)
 mmdc -i diagram.mmd -o diagram.png -w 2048 --backgroundColor white
 
-# PNG with theme (default | dark | neutral | forest | base)
+# PNG with theme — valid -t values: default | dark | neutral | forest
+# (`base` is NOT a valid -t value; it only works inside a %%{init: {'theme':'base'}}%% directive)
 mmdc -i diagram.mmd -o diagram.png -w 2048 --backgroundColor white --theme neutral
 
 # SVG
@@ -208,8 +200,9 @@ curl -X POST -H "Content-Type: text/plain" --data-binary @diagram.mmd https://kr
 # PNG via Kroki
 curl -X POST -H "Content-Type: text/plain" --data-binary @diagram.mmd https://kroki.io/mermaid/png -o diagram.png
 
-# PDF via Kroki
-curl -X POST -H "Content-Type: text/plain" --data-binary @diagram.mmd https://kroki.io/mermaid/pdf -o diagram.pdf
+# PDF is NOT supported by Kroki for Mermaid — POSTing to /mermaid/pdf returns
+# HTTP 400 ("Unsupported output format: pdf for mermaid. Must be one of png or svg").
+# For PDF, use the local mmdc path instead:  mmdc -i diagram.mmd -o diagram.pdf
 ```
 
 **Kroki advantages:**
@@ -227,6 +220,9 @@ curl -X POST -H "Content-Type: text/plain" --data-binary @diagram.mmd https://kr
 | Mistake | Fix |
 |---------|-----|
 | `mmdc` not found | `npm install -g @mermaid-js/mermaid-cli` |
+| `mmdc` error `Could not find Chrome` | Install the headless browser: `npx puppeteer browsers install chrome-headless-shell` (or use Kroki) |
+| Kroki PDF fails with HTTP 400 | Kroki does PNG/SVG only for Mermaid; use local `mmdc` for PDF |
+| Valid diagram reported "invalid" by `mmdc` | The error is a Chrome/puppeteer setup failure, not a syntax error — don't rewrite correct `.mmd`; fix the browser or validate via Kroki |
 | Wrong arrow in sequence | Use `->>` for request, `-->>` for response |
 | Special chars in label | Wrap in quotes: `A["Label: value"]` |
 | Blank/small output | Add `-w 2048` flag |
