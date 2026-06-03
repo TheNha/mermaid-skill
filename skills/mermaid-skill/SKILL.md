@@ -11,6 +11,16 @@ Generate `.mmd` text files and export to PNG/SVG/PDF using `mmdc` (local) or Kro
 
 **Key advantage:** Text-based syntax with **fully automatic layout** — no x/y coordinates needed.
 
+## When to use / when NOT to use
+
+**Use this skill for:** diagrams-as-code with automatic layout (flowchart, sequence, class, state, ER, gantt, mindmap) — text source that lives in git and embeds in Markdown.
+
+**Do NOT use it — route elsewhere — for:**
+- Pixel-precise placement, custom layout, branded icons, or heavy styling → **drawio**.
+- A hand-drawn / sketchy aesthetic → **excalidraw** or **tldraw**.
+- A freeform whiteboard or freehand strokes → **tldraw**.
+- Strict, conventional UML notation → **plantuml**.
+
 ## Prerequisites
 
 **Option A: Local (mmdc)** — also needs a headless Chrome (mmdc renders via Puppeteer)

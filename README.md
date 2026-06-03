@@ -129,6 +129,19 @@ Behind the scenes: **check deps (`mmdc` or Kroki) → pick diagram type → writ
 | Bilingual triggers | ❌ English only | ✅ English + Chinese keywords |
 | Diagram-type guidance | generic | ✅ 11+ type table with copy-paste templates |
 
+## 🎯 When to use (and when not to)
+
+**Good fit:**
+- Diagrams-as-code — define in text, get automatic layout, version-control friendly, embeds straight into Markdown / README / docs
+- Quick flowcharts, sequence, class, state, ER, gantt, and mindmaps from a text description
+- When the source should live next to your code and re-render automatically
+
+**Reach for a sibling skill instead when you need:**
+- **Pixel-precise placement, custom layout, branded icons, or heavy styling** → [drawio-skill](https://github.com/Agents365-ai/drawio-skill)
+- **A hand-drawn / sketchy aesthetic** → [excalidraw-skill](https://github.com/Agents365-ai/excalidraw-skill) or [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill)
+- **A freeform whiteboard or freehand drawing** → [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill)
+- **Strict, conventional UML notation** → [plantuml-skill](https://github.com/Agents365-ai/plantuml-skill)
+
 ## 🔗 Related Skills
 
 Part of the [Agents365-ai diagram-skill family](https://github.com/Agents365-ai) — pick the right tool for the job:

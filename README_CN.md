@@ -128,6 +128,19 @@ Gateway 调 Auth Service,Auth Service 查 User DB、校验密码哈希,
 | 中英双语触发 | ❌ 仅英文 | ✅ 中英关键词都支持 |
 | 图表类型引导 | 一般化 | ✅ 11+ 类型表 + 可复制模板 |
 
+## 🎯 何时用(以及何时别用)
+
+**适合:**
+- 以代码画图 —— 文本定义、自动布局、对版本控制友好,可直接嵌入 Markdown / README / 文档
+- 从文字描述快速生成流程图、时序图、类图、状态图、ER 图、甘特图、思维导图
+- 希望图的源码就放在代码旁边、自动重新渲染的场景
+
+**这些情况请改用同系列的其它 skill:**
+- **像素级定位、自定义布局、品牌图标、复杂样式** → [drawio-skill](https://github.com/Agents365-ai/drawio-skill)
+- **手绘 / 潦草观感** → [excalidraw-skill](https://github.com/Agents365-ai/excalidraw-skill) 或 [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill)
+- **无限画布 / 自由手绘** → [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill)
+- **严格、规范的 UML 记法** → [plantuml-skill](https://github.com/Agents365-ai/plantuml-skill)
+
 ## 🔗 相关 Skill
 
 [Agents365-ai 图表 skill 家族](https://github.com/Agents365-ai) 一员 —— 按场景挑工具:
