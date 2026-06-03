@@ -41,7 +41,24 @@ User/Order/Product/Payment 服务,以及 User DB / Order DB /
 Product DB / Redis Cache
 ```
 
-完整能力矩阵见 [docs/features_CN.md](docs/features_CN.md)。页首与工作流插图的源 `.mmd` 与导出 PNG 都放在 [`assets/`](assets/) 目录。
+### 更多图表类型
+
+Mermaid 自动布局 11+ 种类型 —— 下面每张都由一句提示词生成,并走了 校验 → 导出 → 自检 流程:
+
+<table>
+  <tr>
+    <td align="center"><img src="assets/example-sequence.png" width="260" alt="OAuth 登录时序图"><br><sub><b>时序图</b> · 认证流程</sub></td>
+    <td align="center"><img src="assets/example-class.png" width="140" alt="博客领域类图"><br><sub><b>类图</b> · 领域模型</sub></td>
+    <td align="center"><img src="assets/example-state.png" width="150" alt="订单生命周期状态机"><br><sub><b>状态图</b> · 订单生命周期</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="assets/example-er.png" width="240" alt="电商 ER 图"><br><sub><b>ER 图</b> · 电商 schema</sub></td>
+    <td align="center"><img src="assets/example-gantt.png" width="300" alt="产品发布甘特图"><br><sub><b>甘特图</b> · 发布计划</sub></td>
+    <td align="center"><img src="assets/example-gitgraph.png" width="300" alt="Git 分支策略图"><br><sub><b>Git 图</b> · 分支策略</sub></td>
+  </tr>
+</table>
+
+完整能力矩阵见 [docs/features_CN.md](docs/features_CN.md)。页首、工作流与画廊插图的源 `.mmd` 与导出 PNG 都放在 [`assets/`](assets/) 目录(`example-{sequence,class,state,er,gantt,gitgraph}.mmd`)。
 
 ## 🚀 安装
 

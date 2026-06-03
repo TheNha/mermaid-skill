@@ -41,7 +41,24 @@ API Gateway, User/Order/Product/Payment services, and User DB / Order DB /
 Product DB / Redis Cache
 ```
 
-Full feature matrix in [docs/features.md](docs/features.md). Source `.mmd` files for the hero and workflow images live alongside their PNGs in [`assets/`](assets/).
+### More diagram types
+
+Mermaid auto-lays-out 11+ types — each of these was generated from a one-line prompt and run through the validate → export → self-check pipeline:
+
+<table>
+  <tr>
+    <td align="center"><img src="assets/example-sequence.png" width="260" alt="OAuth login sequence diagram"><br><sub><b>Sequence</b> · auth flow</sub></td>
+    <td align="center"><img src="assets/example-class.png" width="140" alt="Blog domain class diagram"><br><sub><b>Class</b> · domain model</sub></td>
+    <td align="center"><img src="assets/example-state.png" width="150" alt="Order lifecycle state machine"><br><sub><b>State</b> · order lifecycle</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="assets/example-er.png" width="240" alt="E-commerce ER diagram"><br><sub><b>ER</b> · e-commerce schema</sub></td>
+    <td align="center"><img src="assets/example-gantt.png" width="300" alt="Product launch Gantt chart"><br><sub><b>Gantt</b> · launch plan</sub></td>
+    <td align="center"><img src="assets/example-gitgraph.png" width="300" alt="Git branching strategy graph"><br><sub><b>Git graph</b> · branch strategy</sub></td>
+  </tr>
+</table>
+
+Full feature matrix in [docs/features.md](docs/features.md). Source `.mmd` files for the hero, workflow, and gallery images live alongside their PNGs in [`assets/`](assets/) (`example-{sequence,class,state,er,gantt,gitgraph}.mmd`).
 
 ## 🚀 Installation
 
