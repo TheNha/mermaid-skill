@@ -10,8 +10,6 @@
 [![ClawHub](https://img.shields.io/badge/ClawHub-listed-ff6b35)](https://clawhub.ai/agents365-ai/mermaid-pro-skill)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-8a2be2)](https://github.com/Agents365-ai/365-skills)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-兼容-2ea44f)](https://agentskills.io)
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/79JF5Atuk)
-
 [English](README.md) · **中文** · [📖 在线文档](https://agents365-ai.github.io/mermaid-skill/zh.html)
 
 一个把自然语言转成 `.mmd` 源码、导出前自动校验语法,再通过 `mmdc` CLI 或 Kroki HTTP API 渲染为 PNG / SVG / PDF 的技能。支持 **Claude Code、Cursor、Copilot、OpenClaw、Codex、Hermes** 等任何兼容 [Agent Skills](https://agentskills.io) 规范的 agent。
@@ -65,7 +63,7 @@ Mermaid 自动布局 11+ 种类型 —— 下面每张都由一句提示词生�
 ### 1. 选择导出后端
 
 | 选项 | 命令 | 适用场景 |
-|---|---|---|
+| --- | --- | --- |
 | **A —— 本地 `mmdc`** | `npm install -g @mermaid-js/mermaid-cli && mmdc --version` | 质量最佳、可控主题、离线使用 |
 | **B —— Kroki API** | `curl --version` | 无需安装、无需 Node、CI/CD 流水线 |
 
@@ -109,7 +107,7 @@ Gateway 调 Auth Service,Auth Service 查 User DB、校验密码哈希,
 ## 🧩 支持的图表类型
 
 | 类型 | 关键词 | 适用场景 |
-|---|---|---|
+| --- | --- | --- |
 | 流程图 | `flowchart TD/LR` | 业务流程、流水线、决策树 |
 | 时序图 | `sequenceDiagram` | API 调用、认证流程、消息传递 |
 | 类图 | `classDiagram` | OOP 模型、领域实体、继承关系 |
@@ -137,7 +135,7 @@ Gateway 调 Auth Service,Auth Service 查 User DB、校验密码哈希,
 ### 对比原生智能体(无 skill)
 
 | 功能 | 原生智能体 | mermaid-skill |
-|---|---|---|
+| --- | --- | --- |
 | 写 Mermaid 语法 | ✅ 内置 | ✅ 配示例 + 参考文档引导 |
 | 导出前校验 | ❌ 默默导出坏图 | ✅ 必经步骤,出错自动重试 |
 | 导出后自检 | ❌ 从不看渲染结果 | ✅ 视觉读取 PNG,自动修复排版/可读性(≤2 轮) |
@@ -151,11 +149,13 @@ Gateway 调 Auth Service,Auth Service 查 User DB、校验密码哈希,
 ## 🎯 何时用(以及何时别用)
 
 **适合:**
+
 - 以代码画图 —— 文本定义、自动布局、对版本控制友好,可直接嵌入 Markdown / README / 文档
 - 从文字描述快速生成流程图、时序图、类图、状态图、ER 图、甘特图、思维导图
 - 希望图的源码就放在代码旁边、自动重新渲染的场景
 
 **这些情况请改用同系列的其它 skill:**
+
 - **像素级定位、自定义布局、品牌图标、复杂样式** → [drawio-skill](https://github.com/Agents365-ai/drawio-skill)
 - **手绘 / 潦草观感** → [excalidraw-skill](https://github.com/Agents365-ai/excalidraw-skill) 或 [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill)
 - **无限画布 / 自由手绘** → [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill)
@@ -166,20 +166,11 @@ Gateway 调 Auth Service,Auth Service 查 User DB、校验密码哈希,
 [Agents365-ai 图表 skill 家族](https://github.com/Agents365-ai) 一员 —— 按场景挑工具:
 
 | Skill | 风格 | 适用场景 |
-|---|---|---|
+| --- | --- | --- |
 | [drawio-skill](https://github.com/Agents365-ai/drawio-skill) | XML、可手动控制布局 | 精修架构图、ML 模型图 |
 | [excalidraw-skill](https://github.com/Agents365-ai/excalidraw-skill) | 手绘 / 草图 | 白板原型、非正式图 |
 | [plantuml-skill](https://github.com/Agents365-ai/plantuml-skill) | UML 专精 | CI 流水线里的类图 / 序列图 |
 | [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill) | 白板协作 | 随手画、FigJam 风格 |
-
-## 💬 社区
-
-- **Discord:** https://discord.gg/79JF5Atuk
-- **微信:** 扫描下方二维码
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/agents365ai_wechat_1.png" width="200" alt="微信交流群">
-</p>
 
 ## ❤️ 支持作者
 
@@ -214,8 +205,8 @@ Gateway 调 Auth Service,Auth Service 查 User DB、校验密码哈希,
 
 **Agents365-ai**
 
-- GitHub: https://github.com/Agents365-ai
-- Bilibili: https://space.bilibili.com/441831884
+- GitHub: <https://github.com/Agents365-ai>
+- Bilibili: <https://space.bilibili.com/441831884>
 
 ## 📄 许可证
 

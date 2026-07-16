@@ -10,8 +10,6 @@
 [![ClawHub](https://img.shields.io/badge/ClawHub-listed-ff6b35)](https://clawhub.ai/agents365-ai/mermaid-pro-skill)
 [![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-8a2be2)](https://github.com/Agents365-ai/365-skills)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-2ea44f)](https://agentskills.io)
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/79JF5Atuk)
-
 **English** · [中文](README_CN.md) · [📖 Online Docs](https://agents365-ai.github.io/mermaid-skill/)
 
 A skill that turns natural-language requests into `.mmd` source, validates syntax before export, and renders to PNG / SVG / PDF via the `mmdc` CLI or the Kroki HTTP API. Works with **Claude Code, Cursor, Copilot, OpenClaw, Codex, Hermes**, and any agent compatible with the [Agent Skills](https://agentskills.io) format.
@@ -65,7 +63,7 @@ Full feature matrix in [docs/features.md](docs/features.md). Source `.mmd` files
 ### 1. Pick an export backend
 
 | Option | Command | When to use |
-|---|---|---|
+| --- | --- | --- |
 | **A — Local `mmdc`** | `npm install -g @mermaid-js/mermaid-cli && mmdc --version` | Best quality, full theme control, offline use |
 | **B — Kroki API** | `curl --version` | No install, no Node, CI/CD pipelines |
 
@@ -110,7 +108,7 @@ The skill picks the diagram type, writes the `.mmd` source, validates with `mmdc
 ## 🧩 Supported Diagram Types
 
 | Type | Keyword | Use for |
-|---|---|---|
+| --- | --- | --- |
 | Flowchart | `flowchart TD/LR` | processes, pipelines, decision trees |
 | Sequence | `sequenceDiagram` | API calls, auth flows, message passing |
 | Class | `classDiagram` | OOP models, domain entities, inheritance |
@@ -138,7 +136,7 @@ Behind the scenes: **check deps (`mmdc` or Kroki) → pick diagram type → writ
 ### vs Native Agent (no skill)
 
 | Feature | Native agent | mermaid-skill |
-|---|---|---|
+| --- | --- | --- |
 | Writes Mermaid syntax | ✅ inline | ✅ guided by examples + reference files |
 | Validation before export | ❌ exports broken `.mmd` silently | ✅ required step, retries on error |
 | Self-check after export | ❌ never looks at the render | ✅ vision reads the PNG, auto-fixes layout/readability (≤2 rounds) |
@@ -152,11 +150,13 @@ Behind the scenes: **check deps (`mmdc` or Kroki) → pick diagram type → writ
 ## 🎯 When to use (and when not to)
 
 **Good fit:**
+
 - Diagrams-as-code — define in text, get automatic layout, version-control friendly, embeds straight into Markdown / README / docs
 - Quick flowcharts, sequence, class, state, ER, gantt, and mindmaps from a text description
 - When the source should live next to your code and re-render automatically
 
 **Reach for a sibling skill instead when you need:**
+
 - **Pixel-precise placement, custom layout, branded icons, or heavy styling** → [drawio-skill](https://github.com/Agents365-ai/drawio-skill)
 - **A hand-drawn / sketchy aesthetic** → [excalidraw-skill](https://github.com/Agents365-ai/excalidraw-skill) or [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill)
 - **A freeform whiteboard or freehand drawing** → [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill)
@@ -167,20 +167,11 @@ Behind the scenes: **check deps (`mmdc` or Kroki) → pick diagram type → writ
 Part of the [Agents365-ai diagram-skill family](https://github.com/Agents365-ai) — pick the right tool for the job:
 
 | Skill | Style | Best for |
-|---|---|---|
+| --- | --- | --- |
 | [drawio-skill](https://github.com/Agents365-ai/drawio-skill) | XML, manual layout control | Polished architecture diagrams, ML model figures |
 | [excalidraw-skill](https://github.com/Agents365-ai/excalidraw-skill) | Hand-drawn / sketchy | Whiteboard mockups, informal diagrams |
 | [plantuml-skill](https://github.com/Agents365-ai/plantuml-skill) | UML-focused | Class / sequence diagrams in CI pipelines |
 | [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill) | Whiteboard collaboration | Casual sketches, FigJam-style boards |
-
-## 💬 Community
-
-- **Discord:** https://discord.gg/79JF5Atuk
-- **WeChat:** scan the QR code below
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/agents365ai_wechat_1.png" width="200" alt="WeChat Community Group">
-</p>
 
 ## ❤️ Support
 
@@ -215,8 +206,8 @@ If this skill helps you, consider supporting the author:
 
 **Agents365-ai**
 
-- GitHub: https://github.com/Agents365-ai
-- Bilibili: https://space.bilibili.com/441831884
+- GitHub: <https://github.com/Agents365-ai>
+- Bilibili: <https://space.bilibili.com/441831884>
 
 ## 📄 License
 
