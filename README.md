@@ -20,7 +20,7 @@ A skill that turns natural-language requests into `.mmd` source, validates synta
 
 ## ✨ Highlights
 
-- **11+ diagram types** — flowchart, sequence, class, ER, state, Gantt, pie, git graph, C4 context, mind map, and more, all with automatic layout (no x/y coordinates)
+- **17+ diagram types** — flowchart, sequence, class, ER, state, Gantt, pie, git graph, C4 context, mind map, and more, all with automatic layout (no x/y coordinates)
 - **Validation-first workflow** — every `.mmd` is parsed before export, so broken syntax never leaks into a PNG
 - **Vision self-check + review loop** — reads the exported PNG to catch readability/layout defects auto-layout can't prevent (clipped labels, cramped density, wrong orientation), auto-fixes (≤2 rounds), then iterates with you on feedback (≤5 rounds)
 - **Two backends, one skill** — local `mmdc` for best quality, Kroki HTTP API as zero-install fallback (only `curl` required)
@@ -41,7 +41,7 @@ Product DB / Redis Cache
 
 ### More diagram types
 
-Mermaid auto-lays-out 11+ types — each of these was generated from a one-line prompt and run through the validate → export → self-check pipeline:
+Mermaid auto-lays-out 17+ types — each of these was generated from a one-line prompt and run through the validate → export → self-check pipeline:
 
 <table>
   <tr>
@@ -120,6 +120,11 @@ The skill picks the diagram type, writes the `.mmd` source, validates with `mmdc
 | C4 Context | `C4Context` | high-level architecture |
 | Mind Map | `mindmap` | topic breakdowns, brainstorms |
 | Journey | `journey` | user journeys |
+| Use Case | `usecase-beta` | actor–system interactions (UML) |
+| Cynefin | `cynefin-beta` | sense-making / complexity domains |
+| Event Modeling | `eventmodeling` | event-driven system timelines |
+| Tree View | `treeView-beta` | file / directory hierarchies |
+| Wardley Maps | `wardley-beta` | business strategy / value chains |
 
 Per-type syntax references live in [`skills/mermaid-skill/reference/`](skills/mermaid-skill/reference/) and full feature matrix in [docs/features.md](docs/features.md).
 
@@ -145,7 +150,7 @@ Behind the scenes: **check deps (`mmdc` or Kroki) → pick diagram type → writ
 | Zero-install fallback | ❌ | ✅ Kroki API needs only `curl` |
 | Proactive triggering | ❌ only when explicitly asked | ✅ auto-triggers on 3+ components, API flows, state machines |
 | Bilingual triggers | ❌ English only | ✅ English + Chinese keywords |
-| Diagram-type guidance | generic | ✅ 11+ type table with copy-paste templates |
+| Diagram-type guidance | generic | ✅ 17+ type table with copy-paste templates |
 
 ## 🎯 When to use (and when not to)
 

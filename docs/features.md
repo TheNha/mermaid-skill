@@ -5,7 +5,7 @@
 ## Why This Skill?
 
 | Feature | This Skill | Native Claude Code | Other Skills | MCP Server |
-|---------|-----------|-------------------|--------------|------------|
+| --------- | ----------- | ------------------- | -------------- | ------------ |
 | **Write Mermaid syntax** | Guided by examples | Built-in capability | Varies | Varies |
 | **Validation before export** | Required step | No validation loop | Often skipped | Varies |
 | **Export to PNG/SVG/PDF** | Automatic | Manual — user must ask | Usually one method | Web only |
@@ -16,6 +16,7 @@
 | **Progressive disclosure** | Syntax in separate files | N/A | All inline | N/A |
 
 **Key advantages over native Claude Code:**
+
 - **Complete pipeline** — Claude Code can write Mermaid, but stops at `.mmd`. This skill adds validation, export, and error recovery automatically
 - **Catches errors early** — validation loop prevents broken diagrams from being exported
 - **Flexible export** — local mmdc or Kroki API fallback (no install needed)
@@ -23,10 +24,10 @@
 
 ## What This Skill Can Do
 
-### Diagram Types (11+)
+### Diagram Types (17+)
 
 | Type | Use for | Example |
-|------|---------|---------|
+| ------ | --------- | --------- |
 | **Flowchart** | Processes, pipelines, decision trees | CI/CD pipeline, user registration flow |
 | **Sequence** | API calls, authentication flows | JWT auth, microservice communication |
 | **Class** | OOP models, data structures | Domain models, inheritance hierarchies |
@@ -37,6 +38,11 @@
 | **Git Graph** | Branch strategies | GitFlow, trunk-based development |
 | **C4 Context** | High-level architecture | System context, container diagrams |
 | **Mind Map** | Topic breakdowns | Feature planning, brainstorming |
+| **Use Case** | Actor–system interactions (UML) | Login flow, role permissions |
+| **Cynefin** | Sense-making / complexity domains | Incident response, strategy |
+| **Event Modeling** | Event-driven system timelines | Cart add-to-order flow |
+| **Tree View** | File / directory hierarchies | Project structure docs |
+| **Wardley Maps** | Business strategy / value chains | Build vs. buy analysis |
 
 ### Output Formats
 
@@ -47,6 +53,7 @@
 ### Automatic Triggering
 
 The skill activates when you:
+
 - Ask for diagrams explicitly: *"create a flowchart"*, *"draw architecture"*
 - Explain complex systems: *"how does authentication work"* (3+ components)
 - Use Chinese: *"画一个时序图"*, *"架构图"*

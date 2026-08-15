@@ -20,7 +20,7 @@
 
 ## ✨ 核心亮点
 
-- **11+ 种图表类型** —— 流程图、时序图、类图、ER、状态图、甘特、饼图、Git 图、C4 上下文、思维导图等,全部自动布局(无需 x/y 坐标)
+- **17+ 种图表类型** —— 流程图、时序图、类图、ER、状态图、甘特、饼图、Git 图、C4 上下文、思维导图等,全部自动布局(无需 x/y 坐标)
 - **校验优先的工作流** —— 每个 `.mmd` 都先解析再导出,坏图永远不会变成 PNG
 - **视觉自检 + 评审循环** —— 读取导出的 PNG,捕捉自动布局也防不住的可读性/排版缺陷(标签被截断、过于拥挤、方向不当),自动修复(≤2 轮),再根据你的反馈迭代(≤5 轮)
 - **两套后端,一个技能** —— 本地 `mmdc` 质量最佳,Kroki HTTP API 作为零安装备选(只要 `curl`)
@@ -41,7 +41,7 @@ Product DB / Redis Cache
 
 ### 更多图表类型
 
-Mermaid 自动布局 11+ 种类型 —— 下面每张都由一句提示词生成,并走了 校验 → 导出 → 自检 流程:
+Mermaid 自动布局 17+ 种类型 —— 下面每张都由一句提示词生成,并走了 校验 → 导出 → 自检 流程:
 
 <table>
   <tr>
@@ -119,6 +119,11 @@ Gateway 调 Auth Service,Auth Service 查 User DB、校验密码哈希,
 | C4 上下文 | `C4Context` | 高层架构 |
 | 思维导图 | `mindmap` | 主题拆解、头脑风暴 |
 | 用户旅程 | `journey` | 用户路径 |
+| 用例图 | `usecase-beta` | 参与者与系统交互 (UML) |
+| Cynefin | `cynefin-beta` | 复杂度域 / 决策框架 |
+| 事件建模 | `eventmodeling` | 事件驱动系统时间线 |
+| 树视图 | `treeView-beta` | 文件 / 目录层级 |
+| Wardley 地图 | `wardley-beta` | 商业战略 / 价值链 |
 
 各类型语法参考见 [`skills/mermaid-skill/reference/`](skills/mermaid-skill/reference/),完整能力矩阵见 [docs/features_CN.md](docs/features_CN.md)。
 
@@ -144,7 +149,7 @@ Gateway 调 Auth Service,Auth Service 查 User DB、校验密码哈希,
 | 零安装备选 | ❌ | ✅ Kroki API 只要 `curl` |
 | 主动触发 | ❌ 必须显式要求 | ✅ 3+ 组件、API 流程、状态机自动触发 |
 | 中英双语触发 | ❌ 仅英文 | ✅ 中英关键词都支持 |
-| 图表类型引导 | 一般化 | ✅ 11+ 类型表 + 可复制模板 |
+| 图表类型引导 | 一般化 | ✅ 17+ 类型表 + 可复制模板 |
 
 ## 🎯 何时用(以及何时别用)
 
