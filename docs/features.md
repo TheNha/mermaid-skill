@@ -2,17 +2,22 @@
 
 [← Back to README](../README.md)
 
-## Two Skills in This Repo
+## Three Skills in This Repo
 
-| | [`mermaid-skill`](../skills/mermaid-skill/) | [`mermaid-md`](../skills/mermaid-md/) |
-| --- | --- | --- |
-| **Input** | a natural-language request | a `.md` file that already contains ` ```mermaid ` blocks |
-| **Output** | `.mmd` source + PNG / SVG / PDF | one image per block (+ optional Markdown rewrite) |
-| **Source of truth** | the `.mmd` file | the Markdown file — no `.mmd` side files |
-| **Backends** | `mmdc` local, Kroki API fallback | `mmdc` only (nothing leaves your machine) |
-| **Use when** | you want to *author* a new diagram | the diagrams already live in your docs and you need pictures |
+| | [`mermaid-skill`](../skills/mermaid-skill/) | [`mermaid-md`](../skills/mermaid-md/) | [`md-to-docx`](../skills/md-to-docx/) |
+| --- | --- | --- | --- |
+| **Input** | a natural-language request | a `.md` file that already contains ` ```mermaid ` blocks | a `.md` file + the PNGs it references |
+| **Output** | `.mmd` source + PNG / SVG / PDF | one image per block (+ optional Markdown rewrite) | a formatted `.docx` |
+| **Source of truth** | the `.mmd` file | the Markdown file — no `.mmd` side files | the Markdown file |
+| **Runtime** | `mmdc` local, Kroki API fallback | `mmdc` only (nothing leaves your machine) | Node 18+, pure JS (`docx` + `marked`) |
+| **Use when** | you want to *author* a new diagram | the diagrams already live in your docs and you need pictures | the doc has to be delivered as Word / PDF |
 
-Details for the second one in [mermaid-md](#mermaid-md--markdown--images) below.
+They chain: author → render → publish. Details in [mermaid-md](#mermaid-md--markdown--images)
+and [md-to-docx](#md-to-docx--markdown--word) below.
+
+`md-to-docx` is vendored unmodified from
+[github/awesome-copilot](https://github.com/github/awesome-copilot/tree/main/skills/md-to-docx)
+(MIT, © GitHub, Inc.); see [`skills/md-to-docx/NOTICE.md`](../skills/md-to-docx/NOTICE.md).
 
 ## Why This Skill?
 
@@ -115,3 +120,36 @@ python3 $SKILL/scripts/mermaid_md.py docs/design.md -o docs/assets/ --in-place
 
 Full reference: [`skills/mermaid-md/SKILL.md`](../skills/mermaid-md/SKILL.md) ·
 embedding guidance: [`skills/mermaid-md/reference/EMBEDDING.md`](../skills/mermaid-md/reference/EMBEDDING.md)
+
+## md-to-docx — Markdown → Word
+
+Converts a Markdown file into a formatted `.docx` in **pure JavaScript** — no Pandoc, no
+LibreOffice, no native binary.
+
+| Capability | Detail |
+| --- | --- |
+| **Title page** | built from YAML front matter (`title`, `date`, `version`, `audience`); the title splits on `—` into title + subtitle |
+| **Table of contents** | generated from H1–H3 headings |
+| **Embedded images** | every `![alt](path.png)` is resolved relative to the input `.md`, read, scaled to fit 6 inches, and embedded |
+| **Styled output** | Calibri body, colored headings, alternating table rows, Consolas code blocks |
+| **Markdown coverage** | headings, paragraphs, tables, code blocks, lists, images, links, rules |
+
+```bash
+cd skills/md-to-docx/scripts && npm install && cd -          # one-time
+node skills/md-to-docx/scripts/md-to-docx.mjs input.md output.docx
+```
+
+### Chaining with mermaid-md
+
+```bash
+# mermaid blocks -> PNGs, each block swapped for its image
+python3 skills/mermaid-md/scripts/mermaid_md.py report.md -o assets/ \
+  --rewrite report.docx.md --rewrite-mode replace
+
+# that Markdown -> Word, diagrams embedded
+node skills/md-to-docx/scripts/md-to-docx.mjs report.docx.md report.docx
+```
+
+`--rewrite-mode replace` is deliberate here: the `.docx` should carry the picture, not the
+diagram source. Requirements: Node 18+, `docx` 9+, `marked` 15+ — installed by the one-time
+`npm install` above.

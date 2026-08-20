@@ -12,12 +12,15 @@
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-兼容-2ea44f)](https://agentskills.io)
 [English](README.md) · **中文** · [📖 在线文档](https://agents365-ai.github.io/mermaid-skill/zh.html)
 
-两个技能,覆盖图表在项目里出现的两种方式:**`mermaid-skill`** 把自然语言转成 `.mmd` 源码、导出前自动校验语法,再通过 `mmdc` CLI 或 Kroki HTTP API 渲染为 PNG / SVG / PDF;**`mermaid-md`** 则反过来,从你已有的 Markdown 文件里提取每一个 ` ```mermaid ` 代码块,逐块渲染成图片。支持 **Claude Code、Cursor、Copilot、OpenClaw、Codex、Hermes** 等任何兼容 [Agent Skills](https://agentskills.io) 规范的 agent。
+三个技能,覆盖从一句需求到一份可交付文档的全过程:**`mermaid-skill`** 把自然语言转成 `.mmd` 源码、导出前自动校验语法,再通过 `mmdc` CLI 或 Kroki HTTP API 渲染为 PNG / SVG / PDF;**`mermaid-md`** 则反过来,从你已有的 Markdown 文件里提取每一个 ` ```mermaid ` 代码块,逐块渲染成图片;**`md-to-docx`** 再把这份 Markdown 连同图片转成排版好的 Word 文档。支持 **Claude Code、Cursor、Copilot、OpenClaw、Codex、Hermes** 等任何兼容 [Agent Skills](https://agentskills.io) 规范的 agent。
 
 | 技能 | 输入 | 输出 | 何时用 |
 | --- | --- | --- | --- |
 | [**mermaid-skill**](skills/mermaid-skill/) | 一句自然语言需求 | `.mmd` 源码 + PNG / SVG / PDF | 要**新画**一张图 |
 | [**mermaid-md**](skills/mermaid-md/) | 含 ` ```mermaid ` 块的 `.md` 文件 | 每块一张图(可选改写 Markdown) | 图已经写在文档里,只是需要图片 |
+| [**md-to-docx**](skills/md-to-docx/) | `.md` 文件(及其引用的 PNG) | 排版好的 `.docx` | 文档要以 Word / PDF 形式交付 |
+
+`md-to-docx` 来自 [github/awesome-copilot](https://github.com/github/awesome-copilot/tree/main/skills/md-to-docx)(MIT,© GitHub, Inc.),详见 [`skills/md-to-docx/NOTICE.md`](skills/md-to-docx/NOTICE.md)。
 
 <p align="center">
   <img src="assets/example.png" width="900" alt="微服务架构 —— 来自一条自然语言提示词">
@@ -92,6 +95,7 @@ npx skills add Agents365-ai/365-skills -g
 git clone https://github.com/Agents365-ai/mermaid-skill.git /tmp/mermaid-skill
 cp -r /tmp/mermaid-skill/skills/mermaid-skill ~/.claude/skills/   # 画新图
 cp -r /tmp/mermaid-skill/skills/mermaid-md    ~/.claude/skills/   # 渲染 .md 里的图
+cp -r /tmp/mermaid-skill/skills/md-to-docx    ~/.claude/skills/   # Markdown -> Word
 ```
 
 同时索引于 [SkillsMP](https://skillsmp.com/skills/agents365-ai-mermaid-skill-skills-mermaid-skill-skill-md) 与 [ClawHub](https://clawhub.ai/agents365-ai/mermaid-pro-skill)。
@@ -176,6 +180,35 @@ OK   [2] docs/assets/design-2-order-lifecycle.png
 
 > 需要本地 `mmdc` + Node >= 18 + Chrome/Chromium。与 `mermaid-skill` 不同,它没有 Kroki 回退 —— 数据不出本机。
 
+## 📝 md-to-docx —— 把(带图的)Markdown 转成 Word
+
+原样取自 [github/awesome-copilot](https://github.com/github/awesome-copilot/tree/main/skills/md-to-docx)(MIT,© GitHub, Inc.)。它用纯 JavaScript 把 Markdown 转成排版好的 `.docx` —— 不需要 Pandoc、LibreOffice 或任何原生二进制;根据 YAML front matter 生成标题页、用 H1–H3 生成目录,并把 Markdown 引用的每张 PNG 嵌进文档。
+
+配合 `mermaid-md`,就把"文档里的图"一路打通到"可交付的 Word":
+
+```bash
+# 1. 渲染所有 mermaid 块,并把每个代码块换成图片
+python3 skills/mermaid-md/scripts/mermaid_md.py report.md -o assets/ \
+  --rewrite report.docx.md --rewrite-mode replace
+
+# 2. 把这份 Markdown 转成 Word,图片一并嵌入
+cd skills/md-to-docx/scripts && npm install && cd -
+node skills/md-to-docx/scripts/md-to-docx.mjs report.docx.md report.docx
+```
+
+中间文件用 `--rewrite-mode replace`,这样 `.docx` 里进的是图片而不是一堆图表源码。标题页由 front matter 决定:
+
+```yaml
+---
+title: Payments Platform — Architecture Review
+date: 2026-08-20
+version: 1.0
+audience: Engineering, Architects
+---
+```
+
+> 需要 Node >= 18,并在 `skills/md-to-docx/scripts/` 下执行一次 `npm install`。请把修复提交到上游而不是改这份副本 —— [`NOTICE.md`](skills/md-to-docx/NOTICE.md) 记录了取自哪个 commit 以及如何同步更新。
+
 ## 🆚 对比
 
 ### 对比原生智能体(无 skill)
@@ -200,6 +233,7 @@ OK   [2] docs/assets/design-2-order-lifecycle.png
 - 从文字描述快速生成流程图、时序图、类图、状态图、ER 图、甘特图、思维导图
 - 希望图的源码就放在代码旁边、自动重新渲染的场景
 - 把文档里已有的 mermaid 块导出成图片,供无法渲染它们的平台使用(Word、Confluence、PDF、幻灯片)→ `mermaid-md`
+- 把这份 Markdown 连同图表交付成 Word 文档 → `mermaid-md` + `md-to-docx`
 
 **这些情况请改用同系列的其它 skill:**
 

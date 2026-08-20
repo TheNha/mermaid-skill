@@ -2,17 +2,21 @@
 
 [← 返回 README](../README_CN.md)
 
-## 本仓库的两个技能
+## 本仓库的三个技能
 
-| | [`mermaid-skill`](../skills/mermaid-skill/) | [`mermaid-md`](../skills/mermaid-md/) |
-| --- | --- | --- |
-| **输入** | 一句自然语言需求 | 已含 ` ```mermaid ` 块的 `.md` 文件 |
-| **输出** | `.mmd` 源码 + PNG / SVG / PDF | 每块一张图(可选改写 Markdown) |
-| **唯一真相** | `.mmd` 文件 | Markdown 文件 —— 不产生 `.mmd` 副本 |
-| **后端** | 本地 `mmdc`,可回退 Kroki | 仅 `mmdc`(数据不出本机) |
-| **何时用** | 要**新画**一张图 | 图已写在文档里,只是需要图片 |
+| | [`mermaid-skill`](../skills/mermaid-skill/) | [`mermaid-md`](../skills/mermaid-md/) | [`md-to-docx`](../skills/md-to-docx/) |
+| --- | --- | --- | --- |
+| **输入** | 一句自然语言需求 | 已含 ` ```mermaid ` 块的 `.md` 文件 | `.md` 文件及其引用的 PNG |
+| **输出** | `.mmd` 源码 + PNG / SVG / PDF | 每块一张图(可选改写 Markdown) | 排版好的 `.docx` |
+| **唯一真相** | `.mmd` 文件 | Markdown 文件 —— 不产生 `.mmd` 副本 | Markdown 文件 |
+| **运行环境** | 本地 `mmdc`,可回退 Kroki | 仅 `mmdc`(数据不出本机) | Node 18+,纯 JS(`docx` + `marked`) |
+| **何时用** | 要**新画**一张图 | 图已写在文档里,只是需要图片 | 文档要以 Word / PDF 交付 |
 
-第二个技能的细节见下方 [mermaid-md](#mermaid-md--markdown--图片)。
+三者可以串起来:画图 → 渲染 → 交付。细节见下方 [mermaid-md](#mermaid-md--markdown--图片)
+与 [md-to-docx](#md-to-docx--markdown--word)。
+
+`md-to-docx` 原样取自 [github/awesome-copilot](https://github.com/github/awesome-copilot/tree/main/skills/md-to-docx)
+(MIT,© GitHub, Inc.),详见 [`skills/md-to-docx/NOTICE.md`](../skills/md-to-docx/NOTICE.md)。
 
 ## 为什么选择这个技能?
 
@@ -114,3 +118,34 @@ python3 $SKILL/scripts/mermaid_md.py docs/design.md -o docs/assets/ --in-place
 
 完整参数见 [`skills/mermaid-md/SKILL.md`](../skills/mermaid-md/SKILL.md) ·
 嵌入建议见 [`skills/mermaid-md/reference/EMBEDDING.md`](../skills/mermaid-md/reference/EMBEDDING.md)
+
+## md-to-docx —— Markdown → Word
+
+用**纯 JavaScript** 把 Markdown 转成排版好的 `.docx` —— 不需要 Pandoc、LibreOffice 或任何原生二进制。
+
+| 能力 | 说明 |
+| --- | --- |
+| **标题页** | 由 YAML front matter 生成(`title`、`date`、`version`、`audience`);标题按 `—` 拆成主副标题 |
+| **目录** | 依据 H1–H3 标题生成 |
+| **嵌入图片** | 每个 `![alt](path.png)` 相对输入 `.md` 解析、读取、缩放到 6 英寸宽后嵌入 |
+| **排版样式** | 正文 Calibri、彩色标题、表格隔行变色、代码块 Consolas |
+| **Markdown 覆盖** | 标题、段落、表格、代码块、列表、图片、链接、分隔线 |
+
+```bash
+cd skills/md-to-docx/scripts && npm install && cd -          # 一次性
+node skills/md-to-docx/scripts/md-to-docx.mjs input.md output.docx
+```
+
+### 与 mermaid-md 串联
+
+```bash
+# mermaid 块 -> PNG,并把每个代码块换成图片
+python3 skills/mermaid-md/scripts/mermaid_md.py report.md -o assets/ \
+  --rewrite report.docx.md --rewrite-mode replace
+
+# 这份 Markdown -> Word,图表一并嵌入
+node skills/md-to-docx/scripts/md-to-docx.mjs report.docx.md report.docx
+```
+
+这里特意用 `--rewrite-mode replace`:`.docx` 里应该是图片,而不是图表源码。
+依赖:Node 18+、`docx` 9+、`marked` 15+ —— 由上面一次性的 `npm install` 装好。

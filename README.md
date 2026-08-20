@@ -12,12 +12,15 @@
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-2ea44f)](https://agentskills.io)
 **English** · [中文](README_CN.md) · [📖 Online Docs](https://agents365-ai.github.io/mermaid-skill/)
 
-Two skills for the two ways diagrams show up in a project: **`mermaid-skill`** turns natural-language requests into `.mmd` source, validates syntax before export, and renders to PNG / SVG / PDF via the `mmdc` CLI or the Kroki HTTP API — and **`mermaid-md`** goes the other direction, pulling every ` ```mermaid ` block out of a Markdown file you already have and rendering each one to an image. Works with **Claude Code, Cursor, Copilot, OpenClaw, Codex, Hermes**, and any agent compatible with the [Agent Skills](https://agentskills.io) format.
+Three skills covering the whole path from a request to a shippable document: **`mermaid-skill`** turns natural-language requests into `.mmd` source, validates syntax before export, and renders to PNG / SVG / PDF via the `mmdc` CLI or the Kroki HTTP API; **`mermaid-md`** goes the other direction, pulling every ` ```mermaid ` block out of a Markdown file you already have and rendering each one to an image; **`md-to-docx`** turns that Markdown into a formatted Word document with the images embedded. Works with **Claude Code, Cursor, Copilot, OpenClaw, Codex, Hermes**, and any agent compatible with the [Agent Skills](https://agentskills.io) format.
 
 | Skill | Input | Output | Use when |
 | --- | --- | --- | --- |
 | [**mermaid-skill**](skills/mermaid-skill/) | a natural-language request | `.mmd` source + PNG / SVG / PDF | you want to *author* a new diagram |
 | [**mermaid-md**](skills/mermaid-md/) | a `.md` file with ` ```mermaid ` blocks | one image per block (+ optional Markdown rewrite) | the diagrams already live in your docs and you need pictures |
+| [**md-to-docx**](skills/md-to-docx/) | a `.md` file (+ referenced PNGs) | a formatted `.docx` | the doc has to be delivered as Word / PDF |
+
+`md-to-docx` is vendored from [github/awesome-copilot](https://github.com/github/awesome-copilot/tree/main/skills/md-to-docx) (MIT, © GitHub, Inc.) — see [`skills/md-to-docx/NOTICE.md`](skills/md-to-docx/NOTICE.md).
 
 <p align="center">
   <img src="assets/example.png" width="900" alt="Microservices architecture — generated from a single natural-language prompt">
@@ -92,6 +95,7 @@ npx skills add Agents365-ai/365-skills -g
 git clone https://github.com/Agents365-ai/mermaid-skill.git /tmp/mermaid-skill
 cp -r /tmp/mermaid-skill/skills/mermaid-skill ~/.claude/skills/   # author diagrams
 cp -r /tmp/mermaid-skill/skills/mermaid-md    ~/.claude/skills/   # render diagrams in .md
+cp -r /tmp/mermaid-skill/skills/md-to-docx    ~/.claude/skills/   # Markdown -> Word
 ```
 
 Also indexed on [SkillsMP](https://skillsmp.com/skills/agents365-ai-mermaid-skill-skills-mermaid-skill-skill-md) and [ClawHub](https://clawhub.ai/agents365-ai/mermaid-pro-skill).
@@ -177,6 +181,35 @@ Full flag reference in [`skills/mermaid-md/SKILL.md`](skills/mermaid-md/SKILL.md
 
 > Needs local `mmdc` + Node >= 18 + a Chrome/Chromium. Unlike `mermaid-skill`, there is no Kroki fallback — nothing leaves your machine.
 
+## 📝 md-to-docx — Markdown (with those images) → Word
+
+Vendored from [github/awesome-copilot](https://github.com/github/awesome-copilot/tree/main/skills/md-to-docx) (MIT, © GitHub, Inc.), unmodified. It converts a Markdown file into a formatted `.docx` in pure JavaScript — no Pandoc, no LibreOffice, no native binary — building a title page from YAML front matter, a table of contents from H1–H3, and embedding every PNG the Markdown references.
+
+Together with `mermaid-md` that closes the loop from a diagram-in-a-doc to a deliverable Word file:
+
+```bash
+# 1. Render every mermaid block, and swap each block for its image
+python3 skills/mermaid-md/scripts/mermaid_md.py report.md -o assets/ \
+  --rewrite report.docx.md --rewrite-mode replace
+
+# 2. Convert that Markdown to Word, images embedded
+cd skills/md-to-docx/scripts && npm install && cd -
+node skills/md-to-docx/scripts/md-to-docx.mjs report.docx.md report.docx
+```
+
+Use `--rewrite-mode replace` for the intermediate file so the `.docx` gets the picture instead of a wall of diagram source. Front matter drives the title page:
+
+```yaml
+---
+title: Payments Platform — Architecture Review
+date: 2026-08-20
+version: 1.0
+audience: Engineering, Architects
+---
+```
+
+> Needs Node >= 18 and one `npm install` in `skills/md-to-docx/scripts/`. Keep fixes upstream rather than editing the vendored copy — [`NOTICE.md`](skills/md-to-docx/NOTICE.md) records the commit it was taken from and how to refresh it.
+
 ## 🆚 Comparison
 
 ### vs Native Agent (no skill)
@@ -201,6 +234,7 @@ Full flag reference in [`skills/mermaid-md/SKILL.md`](skills/mermaid-md/SKILL.md
 - Quick flowcharts, sequence, class, state, ER, gantt, and mindmaps from a text description
 - When the source should live next to your code and re-render automatically
 - Exporting the mermaid blocks already sitting in your docs to images, for targets that can't render them (Word, Confluence, PDF, slides) → `mermaid-md`
+- Delivering that Markdown as a Word document with the diagrams embedded → `mermaid-md` + `md-to-docx`
 
 **Reach for a sibling skill instead when you need:**
 

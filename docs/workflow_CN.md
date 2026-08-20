@@ -92,23 +92,30 @@ python3 $SKILL/scripts/mermaid_md.py docs/design.md -o docs/assets/ --in-place #
 ```
 mermaid-skill/
 ├── skills/
-│   ├── mermaid-skill/          # 从提示词画新图
+│   ├── mermaid-skill/              # 从提示词画新图
 │   │   ├── SKILL.md
 │   │   └── reference/
-│   │       ├── FLOWCHART.md    # 流程图语法与示例
-│   │       ├── SEQUENCE.md     # 时序图语法
-│   │       ├── CLASS-ER.md     # 类图与 ER 图语法
-│   │       ├── ARCHITECTURE.md # architecture-beta 语法
-│   │       ├── USECASE.md      # 用例图语法
-│   │       └── OTHER-TYPES.md  # 状态图、甘特图、Git 图、饼图、思维导图、C4
-│   └── mermaid-md/             # 渲染 .md 里的 mermaid 块
-│       ├── SKILL.md
-│       ├── scripts/
-│       │   └── mermaid_md.py   # 提取 → 渲染 → 可选改写
-│       └── reference/
-│           └── EMBEDDING.md    # 哪些平台需要图片、路径、CI
-├── assets/                     # 示例 .mmd 源码 + 渲染出的 PNG
-├── docs/                       # 本文档站点
-├── README.md                   # 英文文档(默认)
-└── README_CN.md                # 中文文档
+│   │       ├── FLOWCHART.md        # 流程图语法与示例
+│   │       ├── SEQUENCE.md         # 时序图语法
+│   │       ├── CLASS-ER.md         # 类图与 ER 图语法
+│   │       ├── ARCHITECTURE.md     # architecture-beta 语法
+│   │       ├── USECASE.md          # 用例图语法
+│   │       └── OTHER-TYPES.md      # 状态图、甘特图、Git 图、饼图、思维导图、C4
+│   ├── mermaid-md/                 # 渲染 .md 里的 mermaid 块
+│   │   ├── SKILL.md
+│   │   ├── scripts/
+│   │   │   └── mermaid_md.py       # 提取 → 渲染 → 可选改写
+│   │   └── reference/
+│   │       └── EMBEDDING.md        # 哪些平台需要图片、路径、CI
+│   └── md-to-docx/                 # Markdown → Word (.docx)
+│       ├── SKILL.md                # 取自 github/awesome-copilot(MIT)
+│       ├── NOTICE.md               # 上游 commit 与同步方式
+│       ├── LICENSE
+│       └── scripts/
+│           ├── md-to-docx.mjs
+│           └── package.json
+├── assets/                         # 示例 .mmd 源码 + 渲染出的 PNG
+├── docs/                           # 本文档站点
+├── README.md                       # 英文文档(默认)
+└── README_CN.md                    # 中文文档
 ```

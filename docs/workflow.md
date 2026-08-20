@@ -94,23 +94,30 @@ that image line instead of adding another — so it is safe in a pre-commit hook
 ```
 mermaid-skill/
 ├── skills/
-│   ├── mermaid-skill/          # author diagrams from a prompt
+│   ├── mermaid-skill/              # author diagrams from a prompt
 │   │   ├── SKILL.md
 │   │   └── reference/
-│   │       ├── FLOWCHART.md    # flowchart syntax & examples
-│   │       ├── SEQUENCE.md     # sequence diagram syntax
-│   │       ├── CLASS-ER.md     # class & ER diagram syntax
-│   │       ├── ARCHITECTURE.md # architecture-beta syntax
-│   │       ├── USECASE.md      # use case syntax
-│   │       └── OTHER-TYPES.md  # state, Gantt, git, pie, mindmap, C4
-│   └── mermaid-md/             # render mermaid blocks inside a .md
-│       ├── SKILL.md
-│       ├── scripts/
-│       │   └── mermaid_md.py   # extract → render → optional rewrite
-│       └── reference/
-│           └── EMBEDDING.md    # which targets need images, paths, CI
-├── assets/                     # example .mmd sources + rendered PNGs
-├── docs/                       # this documentation site
-├── README.md                   # English docs (default)
-└── README_CN.md                # Chinese docs
+│   │       ├── FLOWCHART.md        # flowchart syntax & examples
+│   │       ├── SEQUENCE.md         # sequence diagram syntax
+│   │       ├── CLASS-ER.md         # class & ER diagram syntax
+│   │       ├── ARCHITECTURE.md     # architecture-beta syntax
+│   │       ├── USECASE.md          # use case syntax
+│   │       └── OTHER-TYPES.md      # state, Gantt, git, pie, mindmap, C4
+│   ├── mermaid-md/                 # render mermaid blocks inside a .md
+│   │   ├── SKILL.md
+│   │   ├── scripts/
+│   │   │   └── mermaid_md.py       # extract → render → optional rewrite
+│   │   └── reference/
+│   │       └── EMBEDDING.md        # which targets need images, paths, CI
+│   └── md-to-docx/                 # Markdown → Word (.docx)
+│       ├── SKILL.md                # vendored from github/awesome-copilot (MIT)
+│       ├── NOTICE.md               # upstream commit + how to refresh it
+│       ├── LICENSE
+│       └── scripts/
+│           ├── md-to-docx.mjs
+│           └── package.json
+├── assets/                         # example .mmd sources + rendered PNGs
+├── docs/                           # this documentation site
+├── README.md                       # English docs (default)
+└── README_CN.md                    # Chinese docs
 ```

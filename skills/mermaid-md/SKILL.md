@@ -152,7 +152,7 @@ mermaid comment, so it stays invisible in native renderers.
 
 ### What counts as a block
 
-Fenced with ``` or `~~~`, info string starting with `mermaid`. Correctly **skipped**:
+Fenced with ` ``` ` or `~~~`, info string starting with `mermaid`. Correctly **skipped**:
 mermaid fences nested inside a longer outer fence (docs showing mermaid examples), fences
 in other languages, and YAML front matter. Indented blocks (inside list items) are picked
 up and de-indented.
