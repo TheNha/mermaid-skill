@@ -1,0 +1,22 @@
+flowchart TD
+  Start([含 mermaid 块的 Markdown 文件]):::input --> List[清点块:序号、行号、类型]:::process
+
+  List --> Resolve{解析工具链}:::decision
+  Resolve -->|Node < 18 或无 Chrome| Recover[查找新版 Node / 系统 Chrome]:::warning
+  Recover --> Resolve
+  Resolve -->|mmdc 可渲染| Render[逐块渲染为 PNG/SVG/PDF]:::process
+
+  Render --> Ok{全部渲染成功?}:::decision
+  Ok -->|有失败| FixBlock["在 .md 中修好该块<br/>报错指出 design.md:633-654"]:::warning
+  FixBlock --> Only[用 --only N 重渲]:::process
+  Only --> Ok
+
+  Ok -->|全部成功| SelfCheck[视觉自检图片]:::process
+  SelfCheck --> Embed[可选:把图片加到每个块下方]:::process
+  Embed --> Report([报告图片路径]):::output
+
+  classDef input fill:#d4edda,stroke:#28a745,color:#155724
+  classDef process fill:#cce5ff,stroke:#007bff,color:#004085
+  classDef decision fill:#fff3cd,stroke:#ffc107,color:#856404
+  classDef warning fill:#f8d7da,stroke:#dc3545,color:#721c24
+  classDef output fill:#e2d5f1,stroke:#6f42c1,color:#4a235a

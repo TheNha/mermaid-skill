@@ -12,7 +12,12 @@
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-兼容-2ea44f)](https://agentskills.io)
 [English](README.md) · **中文** · [📖 在线文档](https://agents365-ai.github.io/mermaid-skill/zh.html)
 
-一个把自然语言转成 `.mmd` 源码、导出前自动校验语法,再通过 `mmdc` CLI 或 Kroki HTTP API 渲染为 PNG / SVG / PDF 的技能。支持 **Claude Code、Cursor、Copilot、OpenClaw、Codex、Hermes** 等任何兼容 [Agent Skills](https://agentskills.io) 规范的 agent。
+两个技能,覆盖图表在项目里出现的两种方式:**`mermaid-skill`** 把自然语言转成 `.mmd` 源码、导出前自动校验语法,再通过 `mmdc` CLI 或 Kroki HTTP API 渲染为 PNG / SVG / PDF;**`mermaid-md`** 则反过来,从你已有的 Markdown 文件里提取每一个 ` ```mermaid ` 代码块,逐块渲染成图片。支持 **Claude Code、Cursor、Copilot、OpenClaw、Codex、Hermes** 等任何兼容 [Agent Skills](https://agentskills.io) 规范的 agent。
+
+| 技能 | 输入 | 输出 | 何时用 |
+| --- | --- | --- | --- |
+| [**mermaid-skill**](skills/mermaid-skill/) | 一句自然语言需求 | `.mmd` 源码 + PNG / SVG / PDF | 要**新画**一张图 |
+| [**mermaid-md**](skills/mermaid-md/) | 含 ` ```mermaid ` 块的 `.md` 文件 | 每块一张图(可选改写 Markdown) | 图已经写在文档里,只是需要图片 |
 
 <p align="center">
   <img src="assets/example.png" width="900" alt="微服务架构 —— 来自一条自然语言提示词">
@@ -84,8 +89,9 @@ npx skills add Agents365-ai/365-skills -g
 
 ```bash
 # 手动安装
-git clone https://github.com/Agents365-ai/mermaid-skill.git \
-  ~/.claude/skills/mermaid-skill
+git clone https://github.com/Agents365-ai/mermaid-skill.git /tmp/mermaid-skill
+cp -r /tmp/mermaid-skill/skills/mermaid-skill ~/.claude/skills/   # 画新图
+cp -r /tmp/mermaid-skill/skills/mermaid-md    ~/.claude/skills/   # 渲染 .md 里的图
 ```
 
 同时索引于 [SkillsMP](https://skillsmp.com/skills/agents365-ai-mermaid-skill-skills-mermaid-skill-skill-md) 与 [ClawHub](https://clawhub.ai/agents365-ai/mermaid-pro-skill)。
@@ -135,6 +141,41 @@ Gateway 调 Auth Service,Auth Service 查 User DB、校验密码哈希,
 
 幕后流程:**检查依赖(`mmdc` 或 Kroki)→ 选图表类型 → 写 `.mmd` → 校验语法(出错则修复并重新校验)→ 导出 PNG/SVG/PDF → 视觉自检渲染图并自动修复可读性/排版缺陷(≤2 轮)→ 根据你的反馈评审循环(≤5 轮)→ 报告输出路径**。详见 [docs/workflow_CN.md](docs/workflow_CN.md)。
 
+## 📄 mermaid-md —— 渲染 Markdown 里已有的图
+
+设计文档、RFC、README 里往往攒了一堆 ` ```mermaid ` 代码块。GitHub 能渲染,但 Word、Confluence、PDF 导出和幻灯片不能。`mermaid-md` 直接吃这份 Markdown,把每个块渲染出来:
+
+```bash
+SKILL=skills/mermaid-md
+
+# 文件里有什么?(序号、行号区间、图表类型、标题)
+python3 $SKILL/scripts/mermaid_md.py docs/design.md --list
+
+# 全部渲染成 PNG
+python3 $SKILL/scripts/mermaid_md.py docs/design.md -o docs/assets/
+
+# 顺便把图片插到对应代码块下面,原地改写(可重复运行)
+python3 $SKILL/scripts/mermaid_md.py docs/design.md -o docs/assets/ --in-place
+```
+
+```text
+renderer: mmdc (node v20 /usr/bin/node, chrome: /usr/bin/google-chrome)
+OK   [1] docs/assets/design-1-auth-flow.png
+OK   [2] docs/assets/design-2-order-lifecycle.png
+2 rendered, 0 failed
+```
+
+- **Markdown 始终是唯一真相** —— 不生成 `.mmd` 副本。出错时报告该块在 `.md` 中的行号区间,你就地改图,再用 `--only N` 只重渲这一块。
+- **保留代码块** —— 默认把图片追加在代码块下方(`--rewrite-mode replace` 才会替换掉代码块)。重复运行只会刷新那行图片而不会越堆越多,因此 `--in-place` 可以放进 pre-commit 钩子。
+- **块识别准确** —— 支持 ` ``` ` 与 `~~~` 围栏、列表内缩进的块;自动跳过嵌套在更长围栏里的 mermaid 示例、其它语言的代码块以及 YAML front matter。
+- **文件名有意义** —— `design-03-auth-flow.png`,取自 `%% title:` 注释、图表 front matter 标题或最近的标题;非英文标题会折叠成 ASCII,不会变成一串连字符。
+- **自动搞定工具链** —— 自己找可用的 Node(conda/nvm 环境里的旧 Node 正是 `SyntaxError: Unexpected token import` 的常见原因)和 Chrome/Chromium(puppeteer 缓存**或**系统浏览器),容器里自动用 `--no-sandbox` 重试。
+- **可进 CI** —— `--check` 把每个块渲染到临时目录做校验,有失败即非零退出。
+
+完整参数见 [`skills/mermaid-md/SKILL.md`](skills/mermaid-md/SKILL.md);嵌入建议(哪些平台原生渲染 mermaid、路径怎么放、图片如何保持同步)见 [`skills/mermaid-md/reference/EMBEDDING.md`](skills/mermaid-md/reference/EMBEDDING.md)。
+
+> 需要本地 `mmdc` + Node >= 18 + Chrome/Chromium。与 `mermaid-skill` 不同,它没有 Kroki 回退 —— 数据不出本机。
+
 ## 🆚 对比
 
 ### 对比原生智能体(无 skill)
@@ -158,6 +199,7 @@ Gateway 调 Auth Service,Auth Service 查 User DB、校验密码哈希,
 - 以代码画图 —— 文本定义、自动布局、对版本控制友好,可直接嵌入 Markdown / README / 文档
 - 从文字描述快速生成流程图、时序图、类图、状态图、ER 图、甘特图、思维导图
 - 希望图的源码就放在代码旁边、自动重新渲染的场景
+- 把文档里已有的 mermaid 块导出成图片,供无法渲染它们的平台使用(Word、Confluence、PDF、幻灯片)→ `mermaid-md`
 
 **这些情况请改用同系列的其它 skill:**
 

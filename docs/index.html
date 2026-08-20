@@ -172,6 +172,14 @@ footer a:hover { color: var(--text); }
   .features-grid { grid-template-columns: 1fr; }
   .hero-install { flex-direction: column; font-size: 13px; }
 }
+.codeblock {
+  background: var(--bg-code); border: 1px solid var(--border);
+  border-radius: 8px; padding: 20px; margin-top: 28px; overflow-x: auto;
+}
+.codeblock pre {
+  font-family: 'SF Mono', 'Fira Code', monospace; font-size: 14px;
+  line-height: 1.6; white-space: pre-wrap; color: var(--green);
+}
 .skip-link {
   position: absolute; top: -40px; left: 0; background: var(--accent); color: #fff;
   padding: 8px 16px; z-index: 200; font-size: 14px; transition: top 0.2s;
@@ -193,9 +201,9 @@ footer a:hover { color: var(--text); }
   <main id="main-content">
   <div class="hero">
     <div class="container">
-      <div class="hero-badge">Validation-first workflow + Kroki fallback</div>
+      <div class="hero-badge">Two skills &middot; author diagrams, or render the ones in your Markdown</div>
       <h1>mermaid-<span>skill</span></h1>
-      <p>Generate, validate, and export Mermaid diagrams to PNG / SVG / PDF — with a validation loop that catches syntax errors before export.</p>
+      <p>Generate, validate, and export Mermaid diagrams to PNG / SVG / PDF &mdash; and render every <code>```mermaid</code> block already living in your Markdown to an image.</p>
       <div class="hero-install">
         <code id="install-cmd">/plugin marketplace add Agents365-ai/365-skills</code>
         <button class="copy-btn" data-copied="Copied!" onclick="copyInstall()">Copy</button>
@@ -253,6 +261,36 @@ footer a:hover { color: var(--text); }
     </div>
   </section>
 
+  <!-- Two skills -->
+  <section id="skills">
+    <div class="container">
+      <h2 class="section-title">Two Skills, Two Directions</h2>
+      <p class="section-sub">Author a new diagram &mdash; or render the ones already sitting in your Markdown.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#x270F;&#xFE0F;</div>
+          <h3>mermaid-skill</h3>
+          <p><b>In:</b> a natural-language request.<br>
+             <b>Out:</b> <code>.mmd</code> source + PNG / SVG / PDF.<br>
+             Picks the diagram type, validates the syntax, exports, then vision-checks the render. Falls back to the Kroki API when <code>mmdc</code> is missing.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F4C4;</div>
+          <h3>mermaid-md</h3>
+          <p><b>In:</b> a <code>.md</code> file that already contains <code>```mermaid</code> blocks.<br>
+             <b>Out:</b> one image per block, plus an optional rewrite that puts each image under its block.<br>
+             The Markdown stays the source of truth &mdash; errors name the block's line range, <code>--only N</code> re-renders just that one. Local <code>mmdc</code> only; nothing leaves your machine.</p>
+        </div>
+      </div>
+      <div class="codeblock"><pre># Every mermaid block in a doc &rarr; one PNG each
+python3 skills/mermaid-md/scripts/mermaid_md.py docs/design.md --list
+python3 skills/mermaid-md/scripts/mermaid_md.py docs/design.md -o docs/assets/
+
+# ...and add each image under its block, in place (safe to re-run)
+python3 skills/mermaid-md/scripts/mermaid_md.py docs/design.md -o docs/assets/ --in-place</pre></div>
+    </div>
+  </section>
+
   <section>
     <div class="container">
       <h2 class="section-title">Install</h2>
@@ -271,8 +309,10 @@ footer a:hover { color: var(--text); }
 # Or any agent
 npx skills add Agents365-ai/365-skills -g
 
-# Manual install
-git clone https://github.com/Agents365-ai/mermaid-skill.git ~/.claude/skills/mermaid-skill</pre></div>
+# Manual install (both skills live under skills/ in the repo)
+git clone https://github.com/Agents365-ai/mermaid-skill.git /tmp/mermaid-skill
+cp -r /tmp/mermaid-skill/skills/mermaid-skill ~/.claude/skills/
+cp -r /tmp/mermaid-skill/skills/mermaid-md    ~/.claude/skills/</pre></div>
 <div id="tab-opencode" class="tab-content" role="tabpanel"><pre># Global
 git clone https://github.com/Agents365-ai/mermaid-skill.git ~/.config/opencode/skills/mermaid-skill
 
@@ -287,6 +327,7 @@ git clone https://github.com/Agents365-ai/mermaid-skill.git ~/.agents/skills/mer
 
 # Project-level
 git clone https://github.com/Agents365-ai/mermaid-skill.git .agents/skills/mermaid-skill</pre></div>
+      <p class="section-sub" style="margin:20px 0 0;font-size:14px;">The repo ships two skills under <code>skills/</code> &mdash; <code>mermaid-skill</code> and <code>mermaid-md</code>. Copy whichever you need.</p>
     </div>
   </section>
 

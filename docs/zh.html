@@ -172,6 +172,14 @@ footer a:hover { color: var(--text); }
   .features-grid { grid-template-columns: 1fr; }
   .hero-install { flex-direction: column; font-size: 13px; }
 }
+.codeblock {
+  background: var(--bg-code); border: 1px solid var(--border);
+  border-radius: 8px; padding: 20px; margin-top: 28px; overflow-x: auto;
+}
+.codeblock pre {
+  font-family: 'SF Mono', 'Fira Code', monospace; font-size: 14px;
+  line-height: 1.6; white-space: pre-wrap; color: var(--green);
+}
 .skip-link {
   position: absolute; top: -40px; left: 0; background: var(--accent); color: #fff;
   padding: 8px 16px; z-index: 200; font-size: 14px; transition: top 0.2s;
@@ -193,9 +201,9 @@ footer a:hover { color: var(--text); }
   <main id="main-content">
   <div class="hero">
     <div class="container">
-      <div class="hero-badge">校验优先工作流 + Kroki 备选</div>
+      <div class="hero-badge">两个技能 &middot; 画新图,或渲染 Markdown 里已有的图</div>
       <h1>mermaid-<span>skill</span></h1>
-      <p>生成、校验并导出 Mermaid 图表为 PNG / SVG / PDF —— 导出前自动校验语法,杜绝坏图。</p>
+      <p>生成、校验并导出 Mermaid 图表为 PNG / SVG / PDF &mdash; 也能把 Markdown 里已有的每个 <code>```mermaid</code> 块渲染成图片。</p>
       <div class="hero-install">
         <code id="install-cmd">/plugin marketplace add Agents365-ai/365-skills</code>
         <button class="copy-btn" data-copied="已复制!" onclick="copyInstall()">复制</button>
@@ -253,6 +261,36 @@ footer a:hover { color: var(--text); }
     </div>
   </section>
 
+  <!-- Two skills -->
+  <section id="skills">
+    <div class="container">
+      <h2 class="section-title">两个技能,两个方向</h2>
+      <p class="section-sub">画一张新图 &mdash; 或者把已经写在 Markdown 里的图渲染出来。</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#x270F;&#xFE0F;</div>
+          <h3>mermaid-skill</h3>
+          <p><b>输入:</b>一句自然语言需求。<br>
+             <b>输出:</b><code>.mmd</code> 源码 + PNG / SVG / PDF。<br>
+             自动选图表类型、校验语法、导出,再用视觉自检渲染结果。没有 <code>mmdc</code> 时回退到 Kroki API。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F4C4;</div>
+          <h3>mermaid-md</h3>
+          <p><b>输入:</b>已含 <code>```mermaid</code> 块的 <code>.md</code> 文件。<br>
+             <b>输出:</b>每块一张图,并可选择把图片插到对应代码块下方。<br>
+             Markdown 始终是唯一真相 &mdash; 报错指出该块的行号区间,<code>--only N</code> 只重渲这一块。仅用本地 <code>mmdc</code>,数据不出本机。</p>
+        </div>
+      </div>
+      <div class="codeblock"><pre># 文档里的每个 mermaid 块 &rarr; 各出一张 PNG
+python3 skills/mermaid-md/scripts/mermaid_md.py docs/design.md --list
+python3 skills/mermaid-md/scripts/mermaid_md.py docs/design.md -o docs/assets/
+
+# 顺便把图片插到对应代码块下面,原地改写(可重复运行)
+python3 skills/mermaid-md/scripts/mermaid_md.py docs/design.md -o docs/assets/ --in-place</pre></div>
+    </div>
+  </section>
+
   <section>
     <div class="container">
       <h2 class="section-title">安装</h2>
@@ -271,8 +309,10 @@ footer a:hover { color: var(--text); }
 # Or any agent
 npx skills add Agents365-ai/365-skills -g
 
-# Manual install
-git clone https://github.com/Agents365-ai/mermaid-skill.git ~/.claude/skills/mermaid-skill</pre></div>
+# Manual install (both skills live under skills/ in the repo)
+git clone https://github.com/Agents365-ai/mermaid-skill.git /tmp/mermaid-skill
+cp -r /tmp/mermaid-skill/skills/mermaid-skill ~/.claude/skills/
+cp -r /tmp/mermaid-skill/skills/mermaid-md    ~/.claude/skills/</pre></div>
 <div id="tab-opencode" class="tab-content" role="tabpanel"><pre># Global
 git clone https://github.com/Agents365-ai/mermaid-skill.git ~/.config/opencode/skills/mermaid-skill
 
@@ -287,6 +327,7 @@ git clone https://github.com/Agents365-ai/mermaid-skill.git ~/.agents/skills/mer
 
 # Project-level
 git clone https://github.com/Agents365-ai/mermaid-skill.git .agents/skills/mermaid-skill</pre></div>
+      <p class="section-sub" style="margin:20px 0 0;font-size:14px;">仓库的 <code>skills/</code> 下有两个技能 &mdash; <code>mermaid-skill</code> 与 <code>mermaid-md</code>,按需复制。</p>
     </div>
   </section>
 

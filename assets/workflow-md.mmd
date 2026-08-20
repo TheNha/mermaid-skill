@@ -1,0 +1,22 @@
+flowchart TD
+  Start([Markdown file with mermaid blocks]):::input --> List[List blocks: index, lines, type]:::process
+
+  List --> Resolve{Resolve toolchain}:::decision
+  Resolve -->|Node < 18 or no Chrome| Recover[Find newer Node / system Chrome]:::warning
+  Recover --> Resolve
+  Resolve -->|mmdc can render| Render[Render each block to PNG/SVG/PDF]:::process
+
+  Render --> Ok{All blocks rendered?}:::decision
+  Ok -->|Failure| FixBlock["Fix that block in the .md<br/>error names design.md:633-654"]:::warning
+  FixBlock --> Only[Re-render with --only N]:::process
+  Only --> Ok
+
+  Ok -->|Yes| SelfCheck[Vision self-check the images]:::process
+  SelfCheck --> Embed[Optional: add image under each block]:::process
+  Embed --> Report([Report image paths]):::output
+
+  classDef input fill:#d4edda,stroke:#28a745,color:#155724
+  classDef process fill:#cce5ff,stroke:#007bff,color:#004085
+  classDef decision fill:#fff3cd,stroke:#ffc107,color:#856404
+  classDef warning fill:#f8d7da,stroke:#dc3545,color:#721c24
+  classDef output fill:#e2d5f1,stroke:#6f42c1,color:#4a235a

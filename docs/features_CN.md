@@ -2,6 +2,18 @@
 
 [← 返回 README](../README_CN.md)
 
+## 本仓库的两个技能
+
+| | [`mermaid-skill`](../skills/mermaid-skill/) | [`mermaid-md`](../skills/mermaid-md/) |
+| --- | --- | --- |
+| **输入** | 一句自然语言需求 | 已含 ` ```mermaid ` 块的 `.md` 文件 |
+| **输出** | `.mmd` 源码 + PNG / SVG / PDF | 每块一张图(可选改写 Markdown) |
+| **唯一真相** | `.mmd` 文件 | Markdown 文件 —— 不产生 `.mmd` 副本 |
+| **后端** | 本地 `mmdc`,可回退 Kroki | 仅 `mmdc`(数据不出本机) |
+| **何时用** | 要**新画**一张图 | 图已写在文档里,只是需要图片 |
+
+第二个技能的细节见下方 [mermaid-md](#mermaid-md--markdown--图片)。
+
 ## 为什么选择这个技能?
 
 | 特性 | 本技能 | 原生 Claude Code | 其他技能 | MCP 服务器 |
@@ -57,3 +69,48 @@
 - 明确请求图表:*"创建流程图"*、*"画架构图"*
 - 解释复杂系统:*"认证是怎么工作的"*(3+ 组件)
 - 使用中文:*"画一个时序图"*、*"架构图"*
+
+## mermaid-md —— Markdown → 图片
+
+设计文档、RFC、README 里往往攒了一堆 ` ```mermaid ` 代码块。GitHub、GitLab、Obsidian 能直接渲染,
+但 Word、Confluence、PDF 导出和幻灯片不能。`mermaid-md` 直接读这份 Markdown,把每个块渲染出来:
+
+```bash
+SKILL=skills/mermaid-md
+
+python3 $SKILL/scripts/mermaid_md.py docs/design.md --list          # 清点
+python3 $SKILL/scripts/mermaid_md.py docs/design.md -o docs/assets/ # 全部渲染
+python3 $SKILL/scripts/mermaid_md.py docs/design.md -o docs/assets/ --in-place
+```
+
+### 能力
+
+| 能力 | 说明 |
+| --- | --- |
+| **块识别** | 支持 ` ``` ` 与 `~~~` 围栏、列表内缩进的块;跳过嵌套在更长围栏里的 mermaid 示例、其它语言代码块与 YAML front matter |
+| **唯一真相** | `.md` 本身 —— 报错给出该块的行号区间(`design.md:633-654`),就地改图 |
+| **按需重渲** | `--only 2,5-7` 只重渲改动过的块 |
+| **校验** | `--check` 把每块渲染到临时目录,有失败即非零退出,可直接进 CI |
+| **嵌入** | `--rewrite` / `--in-place` 把图片加在代码块**下方**(`--rewrite-mode replace` 才替换掉代码块);重复运行只刷新那行图片,不会重复堆叠 |
+| **文件名** | `design-03-auth-flow.png`,取自 `%% title:` 注释、front matter `title:` 或最近的标题;非英文标题折叠成 ASCII |
+| **工具链自恢复** | 自己找可用的 Node >= 18(旧 conda/nvm Node 是 `SyntaxError: Unexpected token import` 的常见原因)和 Chrome/Chromium(puppeteer 缓存**或**系统浏览器),容器内自动用 `--no-sandbox` 重试 |
+| **格式** | PNG(默认,`-s 2` 更清晰)、SVG、PDF |
+
+### 常用参数
+
+| 参数 | 含义 |
+| --- | --- |
+| `--list` | 列出所有块(序号、行号区间、类型、标题),不渲染 |
+| `--check` | 仅校验,失败则非零退出 |
+| `-o, --outdir` | 图片输出目录 |
+| `-f, --format` | `png` / `svg` / `pdf` |
+| `--only` | 按序号取子集:`3`、`2,5`、`2-4,7` |
+| `-s, --scale` | 像素倍率(PNG 默认 2)—— 控制清晰度的关键参数 |
+| `-t, --theme` | `default` / `dark` / `neutral` / `forest` |
+| `--rewrite [OUT.md]` | 生成带图片链接的 Markdown 副本(默认 `<stem>.rendered.md`) |
+| `--in-place` | 直接改写输入文件 |
+| `--rewrite-mode` | `append`(默认)/ `replace` |
+| `--chrome`、`--node` | 指定浏览器 / Node 可执行文件 |
+
+完整参数见 [`skills/mermaid-md/SKILL.md`](../skills/mermaid-md/SKILL.md) ·
+嵌入建议见 [`skills/mermaid-md/reference/EMBEDDING.md`](../skills/mermaid-md/reference/EMBEDDING.md)

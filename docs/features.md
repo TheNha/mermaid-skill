@@ -2,6 +2,18 @@
 
 [← Back to README](../README.md)
 
+## Two Skills in This Repo
+
+| | [`mermaid-skill`](../skills/mermaid-skill/) | [`mermaid-md`](../skills/mermaid-md/) |
+| --- | --- | --- |
+| **Input** | a natural-language request | a `.md` file that already contains ` ```mermaid ` blocks |
+| **Output** | `.mmd` source + PNG / SVG / PDF | one image per block (+ optional Markdown rewrite) |
+| **Source of truth** | the `.mmd` file | the Markdown file — no `.mmd` side files |
+| **Backends** | `mmdc` local, Kroki API fallback | `mmdc` only (nothing leaves your machine) |
+| **Use when** | you want to *author* a new diagram | the diagrams already live in your docs and you need pictures |
+
+Details for the second one in [mermaid-md](#mermaid-md--markdown--images) below.
+
 ## Why This Skill?
 
 | Feature | This Skill | Native Claude Code | Other Skills | MCP Server |
@@ -57,3 +69,49 @@ The skill activates when you:
 - Ask for diagrams explicitly: *"create a flowchart"*, *"draw architecture"*
 - Explain complex systems: *"how does authentication work"* (3+ components)
 - Use Chinese: *"画一个时序图"*, *"架构图"*
+
+## mermaid-md — Markdown → Images
+
+Design docs, RFCs and READMEs accumulate ` ```mermaid ` blocks. GitHub, GitLab and Obsidian
+render them; Word, Confluence, PDF exports and slide decks do not. `mermaid-md` reads the
+Markdown as-is and renders every block:
+
+```bash
+SKILL=skills/mermaid-md
+
+python3 $SKILL/scripts/mermaid_md.py docs/design.md --list          # inventory
+python3 $SKILL/scripts/mermaid_md.py docs/design.md -o docs/assets/ # render all
+python3 $SKILL/scripts/mermaid_md.py docs/design.md -o docs/assets/ --in-place
+```
+
+### Capabilities
+
+| Capability | Detail |
+| --- | --- |
+| **Block detection** | ` ``` ` and `~~~` fences, blocks indented inside list items; skips mermaid examples nested in a longer outer fence, other languages, and YAML front matter |
+| **Source of truth** | the `.md` — errors report the block's line range (`design.md:633-654`) so you fix the diagram where it lives |
+| **Selective render** | `--only 2,5-7` re-renders just the blocks you edited |
+| **Validation** | `--check` renders every block into a temp dir and exits non-zero if any fails — drops straight into CI |
+| **Embedding** | `--rewrite` / `--in-place` add the image **under** the block (`--rewrite-mode replace` swaps it out instead); re-running refreshes the image line instead of duplicating it |
+| **Filenames** | `design-03-auth-flow.png`, from a `%% title:` comment, front-matter `title:`, or the nearest heading; accents folded to ASCII |
+| **Toolchain recovery** | finds a usable Node >= 18 (an old conda/nvm Node is the usual cause of `SyntaxError: Unexpected token import`) and a Chrome/Chromium (puppeteer cache *or* system browser), retrying with `--no-sandbox` in containers |
+| **Formats** | PNG (default, `-s 2` for crisp output), SVG, PDF |
+
+### Key flags
+
+| Flag | Meaning |
+| --- | --- |
+| `--list` | List blocks (index, line range, type, title) — renders nothing |
+| `--check` | Validate only; non-zero exit on failure |
+| `-o, --outdir` | Image output directory |
+| `-f, --format` | `png` / `svg` / `pdf` |
+| `--only` | Subset by index: `3`, `2,5`, `2-4,7` |
+| `-s, --scale` | Pixel scale (default 2 for PNG) — the sharpness knob |
+| `-t, --theme` | `default` / `dark` / `neutral` / `forest` |
+| `--rewrite [OUT.md]` | Markdown copy with image links (default `<stem>.rendered.md`) |
+| `--in-place` | Rewrite the input file itself |
+| `--rewrite-mode` | `append` (default) / `replace` |
+| `--chrome`, `--node` | Pin the browser / Node binary |
+
+Full reference: [`skills/mermaid-md/SKILL.md`](../skills/mermaid-md/SKILL.md) ·
+embedding guidance: [`skills/mermaid-md/reference/EMBEDDING.md`](../skills/mermaid-md/reference/EMBEDDING.md)

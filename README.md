@@ -12,7 +12,12 @@
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-2ea44f)](https://agentskills.io)
 **English** · [中文](README_CN.md) · [📖 Online Docs](https://agents365-ai.github.io/mermaid-skill/)
 
-A skill that turns natural-language requests into `.mmd` source, validates syntax before export, and renders to PNG / SVG / PDF via the `mmdc` CLI or the Kroki HTTP API. Works with **Claude Code, Cursor, Copilot, OpenClaw, Codex, Hermes**, and any agent compatible with the [Agent Skills](https://agentskills.io) format.
+Two skills for the two ways diagrams show up in a project: **`mermaid-skill`** turns natural-language requests into `.mmd` source, validates syntax before export, and renders to PNG / SVG / PDF via the `mmdc` CLI or the Kroki HTTP API — and **`mermaid-md`** goes the other direction, pulling every ` ```mermaid ` block out of a Markdown file you already have and rendering each one to an image. Works with **Claude Code, Cursor, Copilot, OpenClaw, Codex, Hermes**, and any agent compatible with the [Agent Skills](https://agentskills.io) format.
+
+| Skill | Input | Output | Use when |
+| --- | --- | --- | --- |
+| [**mermaid-skill**](skills/mermaid-skill/) | a natural-language request | `.mmd` source + PNG / SVG / PDF | you want to *author* a new diagram |
+| [**mermaid-md**](skills/mermaid-md/) | a `.md` file with ` ```mermaid ` blocks | one image per block (+ optional Markdown rewrite) | the diagrams already live in your docs and you need pictures |
 
 <p align="center">
   <img src="assets/example.png" width="900" alt="Microservices architecture — generated from a single natural-language prompt">
@@ -84,8 +89,9 @@ npx skills add Agents365-ai/365-skills -g
 
 ```bash
 # Manual install
-git clone https://github.com/Agents365-ai/mermaid-skill.git \
-  ~/.claude/skills/mermaid-skill
+git clone https://github.com/Agents365-ai/mermaid-skill.git /tmp/mermaid-skill
+cp -r /tmp/mermaid-skill/skills/mermaid-skill ~/.claude/skills/   # author diagrams
+cp -r /tmp/mermaid-skill/skills/mermaid-md    ~/.claude/skills/   # render diagrams in .md
 ```
 
 Also indexed on [SkillsMP](https://skillsmp.com/skills/agents365-ai-mermaid-skill-skills-mermaid-skill-skill-md) and [ClawHub](https://clawhub.ai/agents365-ai/mermaid-pro-skill).
@@ -136,6 +142,41 @@ Per-type syntax references live in [`skills/mermaid-skill/reference/`](skills/me
 
 Behind the scenes: **check deps (`mmdc` or Kroki) → pick diagram type → write `.mmd` → validate syntax (fix & re-validate on error) → export PNG/SVG/PDF → vision self-check the render and auto-fix readability/layout defects (≤2 rounds) → review loop on your feedback (≤5 rounds) → report output paths**. Walkthrough in [docs/workflow.md](docs/workflow.md).
 
+## 📄 mermaid-md — render the diagrams already in your Markdown
+
+Design docs, RFCs and READMEs accumulate ` ```mermaid ` blocks. GitHub renders them; Word, Confluence, PDF exports and slide decks do not. `mermaid-md` takes the Markdown file as-is and renders every block:
+
+```bash
+SKILL=skills/mermaid-md
+
+# What's in the file? (index, line range, diagram type, title)
+python3 $SKILL/scripts/mermaid_md.py docs/design.md --list
+
+# Render every block to PNG
+python3 $SKILL/scripts/mermaid_md.py docs/design.md -o docs/assets/
+
+# ...and add each image under its block, in place (safe to re-run)
+python3 $SKILL/scripts/mermaid_md.py docs/design.md -o docs/assets/ --in-place
+```
+
+```text
+renderer: mmdc (node v20 /usr/bin/node, chrome: /usr/bin/google-chrome)
+OK   [1] docs/assets/design-1-auth-flow.png
+OK   [2] docs/assets/design-2-order-lifecycle.png
+2 rendered, 0 failed
+```
+
+- **The Markdown stays the source of truth** — no `.mmd` side files. Failures report the block's line range in the `.md`, so you fix the diagram where it lives and re-render just that one with `--only N`.
+- **The code block is kept** — the image is appended below it by default (`--rewrite-mode replace` swaps it out instead). Re-running refreshes the image line rather than stacking duplicates, so `--in-place` fits a pre-commit hook.
+- **Correct block detection** — handles ` ``` ` and `~~~` fences and blocks indented inside list items, while skipping mermaid examples nested in a longer outer fence, other languages, and YAML front matter.
+- **Meaningful filenames** — `design-03-auth-flow.png`, from a `%% title:` comment, the diagram's front-matter title, or the nearest heading; accents are folded to ASCII so non-English headings stay readable.
+- **Sorts out its own toolchain** — finds a usable Node (an active conda/nvm env with an old Node is the usual cause of `SyntaxError: Unexpected token import`) and a Chrome/Chromium (puppeteer cache *or* a system browser), retrying with `--no-sandbox` in containers.
+- **CI-ready** — `--check` validates every block into a temp dir and exits non-zero if any fails.
+
+Full flag reference in [`skills/mermaid-md/SKILL.md`](skills/mermaid-md/SKILL.md); embedding guidance (which targets render mermaid natively, path layout, keeping images in sync) in [`skills/mermaid-md/reference/EMBEDDING.md`](skills/mermaid-md/reference/EMBEDDING.md).
+
+> Needs local `mmdc` + Node >= 18 + a Chrome/Chromium. Unlike `mermaid-skill`, there is no Kroki fallback — nothing leaves your machine.
+
 ## 🆚 Comparison
 
 ### vs Native Agent (no skill)
@@ -159,6 +200,7 @@ Behind the scenes: **check deps (`mmdc` or Kroki) → pick diagram type → writ
 - Diagrams-as-code — define in text, get automatic layout, version-control friendly, embeds straight into Markdown / README / docs
 - Quick flowcharts, sequence, class, state, ER, gantt, and mindmaps from a text description
 - When the source should live next to your code and re-render automatically
+- Exporting the mermaid blocks already sitting in your docs to images, for targets that can't render them (Word, Confluence, PDF, slides) → `mermaid-md`
 
 **Reach for a sibling skill instead when you need:**
 
