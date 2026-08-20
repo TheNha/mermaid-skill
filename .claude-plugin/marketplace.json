@@ -1,60 +1,18 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
-  "name": "mermaid-skill",
-  "description": "Diagrams-as-code skills: author Mermaid diagrams, render the ones already in your Markdown, and ship the doc as Word.",
-  "version": "1.0.0",
+  "name": "mermaid",
   "owner": {
-    "name": "Agents365-ai",
-    "url": "https://github.com/Agents365-ai/mermaid-skill"
+    "name": "The Nha",
+    "email": "thenha1107@gmail.com"
   },
+  "version": "1.0.0",
+  "description": "Plugin marketplace of mermaid",
   "plugins": [
     {
       "name": "mermaid",
-      "displayName": "Mermaid Diagrams",
-      "description": "Generate Mermaid diagrams from a natural-language request, validate the syntax, and export to PNG / SVG / PDF via the mmdc CLI or the Kroki API. 17+ diagram types with automatic layout.",
-      "version": "1.1.0",
+      "description": "Plugin of mermaid",
       "source": "./",
-      "skills": ["./skills/mermaid-skill"],
-      "strict": false,
-      "author": { "name": "Agents365-ai", "url": "https://github.com/Agents365-ai" },
-      "homepage": "https://agents365-ai.github.io/mermaid-skill/",
-      "repository": "https://github.com/Agents365-ai/mermaid-skill",
-      "license": "MIT",
-      "category": "diagrams",
-      "keywords": ["mermaid", "diagram", "flowchart", "sequence-diagram", "architecture", "documentation"],
-      "tags": ["mermaid", "diagrams", "docs"]
-    },
-    {
-      "name": "mermaid-md",
-      "displayName": "Mermaid in Markdown to Images",
-      "description": "Extract every mermaid code block from a Markdown file and render each one to PNG / SVG / PDF, optionally inserting the image under its block. For docs headed to Word, PDF, Confluence, or slides.",
-      "version": "1.0.0",
-      "source": "./",
-      "skills": ["./skills/mermaid-md"],
-      "strict": false,
-      "author": { "name": "Agents365-ai", "url": "https://github.com/Agents365-ai" },
-      "homepage": "https://agents365-ai.github.io/mermaid-skill/",
-      "repository": "https://github.com/Agents365-ai/mermaid-skill",
-      "license": "MIT",
-      "category": "diagrams",
-      "keywords": ["mermaid", "markdown", "png", "export", "documentation"],
-      "tags": ["mermaid", "markdown", "export"]
-    },
-    {
-      "name": "md-to-docx",
-      "displayName": "Markdown to Word",
-      "description": "Convert a Markdown file into a formatted Word (.docx) document with embedded PNG images, a front-matter title page, and a generated table of contents. Pure JavaScript — no Pandoc or LibreOffice.",
-      "version": "1.0.0",
-      "source": "./",
-      "skills": ["./skills/md-to-docx"],
-      "strict": false,
-      "author": { "name": "GitHub, Inc.", "url": "https://github.com/github/awesome-copilot" },
-      "homepage": "https://github.com/github/awesome-copilot/tree/main/skills/md-to-docx",
-      "repository": "https://github.com/github/awesome-copilot",
-      "license": "MIT",
-      "category": "documents",
-      "keywords": ["markdown", "docx", "word", "export", "documentation"],
-      "tags": ["markdown", "word", "export"]
+      "category": "development"
     }
   ]
 }

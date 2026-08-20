@@ -87,16 +87,14 @@ npx skills add Agents365-ai/365-skills -g
 ```text
 # Claude Code 插件市场 —— 本仓库本身就是一个 marketplace
 > /plugin marketplace add Agents365-ai/mermaid-skill
-> /plugin install mermaid@mermaid-skill        # 画新图
-> /plugin install mermaid-md@mermaid-skill     # 渲染 .md 里的 mermaid 块
-> /plugin install md-to-docx@mermaid-skill     # Markdown -> Word
+> /plugin install mermaid@mermaid              # 三个技能一并安装
 
 # ...或者用本地 clone(指向仓库根目录,不是某个 skill 目录)
 > /plugin marketplace add ../mermaid-skill
 ```
 
-三个技能是三个独立插件,可以只装需要的那个。
-`git pull` 之后用 `/plugin marketplace update mermaid-skill` 刷新目录。
+一个插件 `mermaid` 即包含全部三个技能。`git pull` 之后用
+`/plugin marketplace update mermaid` 刷新目录。
 
 ```bash
 # 手动安装
@@ -108,7 +106,7 @@ cp -r /tmp/mermaid-skill/skills/md-to-docx    ~/.claude/skills/   # Markdown -> 
 
 同时索引于 [SkillsMP](https://skillsmp.com/skills/agents365-ai-mermaid-skill-skills-mermaid-skill-skill-md) 与 [ClawHub](https://clawhub.ai/agents365-ai/mermaid-pro-skill)。
 
-**更新:** `/plugin update mermaid@mermaid-skill`(Claude Code)、`skills update mermaid-skill`(SkillsMP)、`clawhub update mermaid-pro-skill`(OpenClaw),或 `git pull`(手动安装)。
+**更新:** `/plugin update mermaid@mermaid`(Claude Code)、`skills update mermaid-skill`(SkillsMP)、`clawhub update mermaid-pro-skill`(OpenClaw),或 `git pull`(手动安装)。
 
 ## ⚡ 快速开始
 

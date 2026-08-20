@@ -87,16 +87,14 @@ npx skills add Agents365-ai/365-skills -g
 ```text
 # Claude Code plugin marketplace — this repo IS a marketplace
 > /plugin marketplace add Agents365-ai/mermaid-skill
-> /plugin install mermaid@mermaid-skill        # author diagrams
-> /plugin install mermaid-md@mermaid-skill     # render mermaid blocks in a .md
-> /plugin install md-to-docx@mermaid-skill     # Markdown -> Word
+> /plugin install mermaid@mermaid              # all three skills
 
 # ...or from a local clone (path to the repo, not to a skill folder)
 > /plugin marketplace add ../mermaid-skill
 ```
 
-The three skills are three separate plugins, so you can install only the ones you want.
-`/plugin marketplace update mermaid-skill` refreshes the catalog after a `git pull`.
+One plugin, `mermaid`, ships all three skills. After a `git pull`, refresh the catalog with
+`/plugin marketplace update mermaid`.
 
 ```bash
 # Manual install
@@ -108,7 +106,7 @@ cp -r /tmp/mermaid-skill/skills/md-to-docx    ~/.claude/skills/   # Markdown -> 
 
 Also indexed on [SkillsMP](https://skillsmp.com/skills/agents365-ai-mermaid-skill-skills-mermaid-skill-skill-md) and [ClawHub](https://clawhub.ai/agents365-ai/mermaid-pro-skill).
 
-**Updating:** `/plugin update mermaid@mermaid-skill` (Claude Code), `skills update mermaid-skill` (SkillsMP), `clawhub update mermaid-pro-skill` (OpenClaw), or `git pull` for manual installs.
+**Updating:** `/plugin update mermaid@mermaid` (Claude Code), `skills update mermaid-skill` (SkillsMP), `clawhub update mermaid-pro-skill` (OpenClaw), or `git pull` for manual installs.
 
 ## ⚡ Quick Start
 
