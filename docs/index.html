@@ -314,9 +314,11 @@ node skills/md-to-docx/scripts/md-to-docx.mjs report.docx.md report.docx</pre></
 <button class="tab" role="tab" aria-selected="false" aria-controls="tab-skillsmp" onclick="switchTab(event, 'tab-skillsmp')">SkillsMP</button>
 <button class="tab" role="tab" aria-selected="false" aria-controls="tab-codex" onclick="switchTab(event, 'tab-codex')">Codex</button>
       </div>
-      <div id="tab-claude" class="tab-content active" role="tabpanel"><pre># Plugin marketplace (recommended)
-/plugin marketplace add Agents365-ai/365-skills
-/plugin install mermaid
+      <div id="tab-claude" class="tab-content active" role="tabpanel"><pre># Plugin marketplace — this repo IS a marketplace
+/plugin marketplace add Agents365-ai/mermaid-skill
+/plugin install mermaid@mermaid-skill        # author diagrams
+/plugin install mermaid-md@mermaid-skill     # render mermaid blocks in a .md
+/plugin install md-to-docx@mermaid-skill     # Markdown -&gt; Word
 
 # Or any agent
 npx skills add Agents365-ai/365-skills -g

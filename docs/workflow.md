@@ -93,6 +93,8 @@ that image line instead of adding another — so it is safe in a pre-commit hook
 
 ```
 mermaid-skill/
+├── .claude-plugin/
+│   └── marketplace.json            # makes this repo a Claude Code plugin marketplace
 ├── skills/
 │   ├── mermaid-skill/              # author diagrams from a prompt
 │   │   ├── SKILL.md

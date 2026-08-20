@@ -91,6 +91,8 @@ python3 $SKILL/scripts/mermaid_md.py docs/design.md -o docs/assets/ --in-place #
 
 ```
 mermaid-skill/
+├── .claude-plugin/
+│   └── marketplace.json            # 让本仓库成为 Claude Code 插件市场
 ├── skills/
 │   ├── mermaid-skill/              # 从提示词画新图
 │   │   ├── SKILL.md
